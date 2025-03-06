@@ -157,6 +157,7 @@ function showRewardScene() {
         const clickableFlower = document.getElementById("clickable-flower");
         clickableFlower.style.display = "block";  // 👈 Make it visible
         clickableFlower.classList.add("glowing"); // 👈 Add glow effect
+        
     }, 17000); // Appear after first leaf falls
 }
 
@@ -182,7 +183,11 @@ document.getElementById("clickable-flower").addEventListener("click", () => {
     document.getElementById("clickable-flower").style.display = "none";
 
     // ✅ Start second leaf animation
-    showSecondLeafAnimation();
+    setTimeout(() => {
+        const secondLeaf = document.getElementById("falling-leaf-2");
+        secondLeaf.style.display = "block"; // Show second leaf
+        secondLeaf.style.animation = "leafFall2 15s ease-in-out forwards"; // Start fall animation
+    }, 1000);
 
     // ✅ Show new guitar & drum cats after leaf almost finishes falling
     setTimeout(() => {
@@ -199,25 +204,13 @@ document.getElementById("clickable-flower").addEventListener("click", () => {
         }, 50);
     }, 10000);
 
-    // ✅ Make the letter glow after the second leaf fully falls
-    setTimeout(() => {
-        document.getElementById("paper-letter-container").classList.add("glowing");
-    }, 16000);
-});
-
-function showSecondLeafAnimation() {
-    setTimeout(() => {
-        const secondLeaf = document.getElementById("falling-leaf-2");
-        secondLeaf.style.display = "block"; // Show second leaf
-        secondLeaf.style.animation = "leafFall2 15s ease-in-out forwards"; // Start fall animation
-    }, 1000); // Delay after clicking the letter
-     // ✅ After the 2nd leaf has fallen, make the letter clickable
     setTimeout(() => {
         const clickableLetter = document.getElementById("clickable-letter");
-        clickableLetter.style.display = "block";  // 👈 Make it visible
-        clickableLetter.classList.add("glowing"); // 👈 Add glow effect
-    }, 17000); // Same duration as 2nd leaf fall
-}
+        // ✅ Ensure it becomes visible first
+        clickableLetter.style.display = "block";  
+        clickableLetter.classList.add("glowing2");
+    }, 17000); // This should match the falling leaf timing
+});
 
 
 // 📜 Letter Click Event
@@ -229,15 +222,19 @@ function showLetter() {
 
     const letter = document.getElementById("clickable-letter");
 
-    // ✉️ Stop glowing and disable clicking
-    letter.classList.remove("glowing");
-    letter.style.pointerEvents = "none"; 
-}
+    // ✉️ Stop glowing and disable click
+    letter.classList.remove("glowing2");
+    letter.style.pointerEvents = "none"; // Prevent multiple clicks
 
-// Function to move text slightly up
-function moveTextUp() {
-    const letterText = document.getElementById("letter-text");
-    letterText.classList.add("move-up"); // Apply smooth movement
+    // 📝 Ensure the letter container is **displayed first** before applying fade-in effect
+    const letterContainer = document.getElementById("paper-letter-container");
+    
+    setTimeout(() => {
+        letterContainer.style.display = "block"; // Make sure it's visible
+        setTimeout(() => {
+            letterContainer.classList.add("show-letter"); // Smooth fade-in with zoom effect
+        }, 10); // Tiny delay for transition effect
+    }, 2000); // 3-second delay before letter starts appearing
 }
 
 let typingTimeout; // Store timeout reference to prevent duplication
@@ -253,7 +250,7 @@ function typeMessage() {
                 letter.classList.add("show"); // Apply fade-in animation
             }, index * delay); // Increase delay per letter for a dramatic effect
         });
-    }, 2500); // **4-second delay before starting**
+    }, 3000); // **4-second delay before starting**
 }
 
 // 📜 Letter Click Event (Start Animation on Click)
@@ -261,10 +258,10 @@ document.getElementById("clickable-letter").addEventListener("click", typeMessag
 
 function showResult() {
     document.getElementById("quiz-content").innerHTML = `
-        <h1>🎉 Quiz Completed! 🌟</h1>
-        <p>Your Score: ${score} / ${activeQuestions.length}</p>
-        <button onclick="location.reload()">🔄 Try Again</button>
-    `;
+     <h1>🎉 Quiz Completed! 🌟</h1>
+     <p>Your Score: ${score} / ${activeQuestions.length}</p>
+     <button onclick="location.reload()">🔄 Try Again</button>
+`;
 }
 
 document.addEventListener("mousemove", (event) => {

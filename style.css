@@ -318,18 +318,7 @@ button:hover {
     z-index: 100
 }
 
-/* 🌸 Flower Cat & Clickable Flower Container */
-#flower-cat-container {
-    position: fixed;
-    bottom: 0px;
-    right: 0px;
-    width: 210px;
-    height: auto;
-    display: block; /* Ensure it's visible */
-    opacity: 0; /* Initially hidden */
-    transition: opacity 1.5s ease-in-out;
-    z-index: 300;
-}
+
 
 /* 🐱 Flower Cat */
 #flower-cat {
@@ -352,10 +341,38 @@ button:hover {
     z-index: 350;
 }
 
-/* ✨ Glowing Effect */
-.glowing {
-    opacity: 1 !important; /* Make it visible */
+/* ✉️ Clickable Letter - Starts Invisible */
+#clickable-letter {
+    position: absolute;
+    top: 70%; /* Adjust this to align with the letter */
+    left: 57%;
+    transform: translate(-50%, -50%);
+    width: 260px; /* Adjust letter size */
+    cursor: pointer;
+    opacity: 0; /* 👈 Hidden at start */
+    display: none; /* 👈 Ensure it's not visible */
+    transition: opacity 1.5s ease-in-out, filter 0.5s ease-in-out;
+    z-index: 350;
+}
+
+/* ✨ Glow Effect When Clickable */
+.glowing2 {
+    opacity: 1 !important;
     filter: brightness(1.5) drop-shadow(0px 0px 10px yellow);
+    transition: filter 1s ease-in-out;
+}
+
+/* 🌸 Flower Cat & Clickable Flower Container */
+#flower-cat-container {
+    position: fixed;
+    bottom: 0px;
+    right: 0px;
+    width: 210px;
+    height: auto;
+    display: block; /* Ensure it's visible */
+    opacity: 0; /* Initially hidden */
+    transition: opacity 1.5s ease-in-out;
+    z-index: 300;
 }
 
 /* 🐱 Letter Cat - Start Hidden */
@@ -366,7 +383,7 @@ button:hover {
     width: 180px;
     height: auto;
     opacity: 0; /* Start Invisible */
-    display: none; /* Ensure it's completely hidden */
+    display: block; /* Ensure it's completely hidden */
     transition: opacity 1.5s ease-in-out;
     z-index: 300
 }
@@ -380,24 +397,13 @@ button:hover {
 
 
 
-/* ✉️ Clickable Letter - Starts Invisible */
-#clickable-letter {
-    position: absolute;
-    top: 70%; /* Adjust this to align with the letter */
-    left: 57%;
-    transform: translate(-50%, -50%);
-    width: 260px; /* Adjust letter size */
-    cursor: pointer;
-    opacity: 0; /* 👈 Hidden at start */
-    display: none; /* 👈 Ensure it's not visible */
-    transition: opacity 1.5s ease-in-out, filter 0.5s ease-in-out;
-    z-index: 350
-}
+
 
 /* ✨ Glow Effect When Clickable */
 .glowing {
-    opacity: 1 !important; /* 👈 Fully visible */
-    filter: brightness(1.5) drop-shadow(0px 0px 10px yellow);
+    opacity: 1 !important;
+    filter: brightness(1.4) drop-shadow(0px 0px 10px yellow);
+    transition: filter 1s ease-in-out;
 }
 
 /* 📝 Letter Note */
