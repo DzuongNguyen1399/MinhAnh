@@ -318,17 +318,44 @@ button:hover {
     z-index: 100
 }
 
-/* 🐱 Flower Cat - Start Hidden */
-#flower-cat {
+/* 🌸 Flower Cat & Clickable Flower Container */
+#flower-cat-container {
     position: fixed;
     bottom: 0px;
     right: 0px;
     width: 210px;
     height: auto;
-    opacity: 0; /* Start Invisible */
-    display: none; /* Ensure it's completely hidden */
+    display: block; /* Ensure it's visible */
+    opacity: 0; /* Initially hidden */
     transition: opacity 1.5s ease-in-out;
-    z-index: 300
+    z-index: 300;
+}
+
+/* 🐱 Flower Cat */
+#flower-cat {
+    width: 100%;
+    height: auto;
+    opacity: 1; /* Ensure it's visible */
+}
+
+/* 🌸 Clickable Flower */
+#clickable-flower {
+    position: absolute;
+    bottom: 1%; /* Adjust to match the cat's hand */
+    left: 55%;
+    transform: translateX(-50%);
+    width: 100%;
+    cursor: pointer;
+    opacity: 0; /* Start hidden */
+    display: none; /* Hidden at first */
+    transition: opacity 1.5s ease-in-out, filter 0.5s ease-in-out;
+    z-index: 350;
+}
+
+/* ✨ Glowing Effect */
+.glowing {
+    opacity: 1 !important; /* Make it visible */
+    filter: brightness(1.5) drop-shadow(0px 0px 10px yellow);
 }
 
 /* 🐱 Letter Cat - Start Hidden */
@@ -348,21 +375,28 @@ button:hover {
 #letter-cat {
     width: 150%;  /* Ensures it scales with the container */
     height: auto; /* Keeps aspect ratio */
+    z-index: 300
 }
 
-/* ✉️ Clickable Letter - Overlay on Letter Cat */
+
+
+/* ✉️ Clickable Letter - Starts Invisible */
 #clickable-letter {
     position: absolute;
-    top: 51%; /* Adjust this to align with the letter */
-    left: 74%;
+    top: 70%; /* Adjust this to align with the letter */
+    left: 57%;
     transform: translate(-50%, -50%);
     width: 260px; /* Adjust letter size */
     cursor: pointer;
-    transition: filter 0.3s ease-in-out;
+    opacity: 0; /* 👈 Hidden at start */
+    display: none; /* 👈 Ensure it's not visible */
+    transition: opacity 1.5s ease-in-out, filter 0.5s ease-in-out;
+    z-index: 350
 }
 
-/* ✨ Glow Effect When Hovering Over Letter */
-#clickable-letter:hover {
+/* ✨ Glow Effect When Clickable */
+.glowing {
+    opacity: 1 !important; /* 👈 Fully visible */
     filter: brightness(1.5) drop-shadow(0px 0px 10px yellow);
 }
 
@@ -583,31 +617,54 @@ button:hover {
 
 
 
-/* 📜 Love Letter - Centered at the Top */
+/* 📜 Letter Paper - Ensure Centered & Dramatic Entrance */
 #paper-letter-container {
     position: fixed;
-    top: 15%; /* Moves letter higher */
+    top: 50%;
     left: 50%;
-    transform: translate(-50%, 0) scale(1.4); /* Scale the whole letter but keep it centered */
-    width: 50vw; /* Responsive size */
+    transform: translate(-50%, -50%) scale(1.2); /* Start zoomed out */
+    width: 50vw; /* Responsive width */
     max-width: 800px; /* Prevents it from getting too large */
     height: auto;
-    display: none; /* Initially hidden */
-    text-align: center;
-    z-index: 200;
+    opacity: 0; /* Initially hidden */
+    transition: opacity 5s ease-in-out; /* Slow fade-in effect */
+    display: none; /* Hidden at start */
+    z-index: 250; /* Ensure it's on top */
 }
+
+/* When the letter appears */
+.show-letter {
+    display: block; /* Make it visible */
+    opacity: 1; /* Fade-in effect */
+    transform: translate(-50%, -50%) scale(1); /* Zoom in smoothly */
+}
+
+
+
+/* 📝 Dramatic Letter-by-Letter Text Appearance */
+.letter {
+    opacity: 0; /* Start invisible */
+    transform: translateY(10px); /* Slight downward movement */
+    transition: opacity 2.0s ease-in-out, transform 2.0s ease-in-out; /* Smooth fade-in */
+}
+
+.letter.show {
+    opacity: 1; /* Fade in */
+    transform: translateY(0px); /* Move back to original position */
+}
+
 
 /* ✍️ Handwritten Text on Paper - Ensure it Scales Well */
 #letter-text {
     position: absolute;
-    top: 30%; /* Adjust placement of text */
-    left: 50%;
+    top: 23%; /* Adjust placement of text */
+    left: 54%;
     transform: translate(-50%, -30%);
-    width: 60%; /* Keep text inside the letter */
+    width: 75%; /* Keep text inside the letter */
     font-size: 3vw; /* Responsive font size */
     font-family: 'Dancing Script', cursive; /* Fancy handwritten font */
     color: black; /* Ink color */
     text-align: center;
-    line-height: 1.0; /* Improved readability */
+    line-height: 1.4; /* Improved readability */
     z-index: 250;
 }

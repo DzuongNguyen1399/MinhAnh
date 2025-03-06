@@ -137,7 +137,7 @@ function showRewardScene() {
 
     // 🐱 Reveal the Cats as the Leaf Passes Their Positions
     setTimeout(() => {
-        const flowerCat = document.getElementById("flower-cat");
+        const flowerCat = document.getElementById("flower-cat-container");
         flowerCat.style.display = "block"; // Ensure it's visible
         setTimeout(() => {
             flowerCat.style.opacity = "1"; // Make it fade in
@@ -150,27 +150,20 @@ function showRewardScene() {
         setTimeout(() => {
             letterCat.style.opacity = "1"; // Make it fade in
         }, 10);
-    }, 10500); // Letter cat appears when the leaf is near the bottom
-}
-
-
-function showSecondLeafAnimation() {
+    }, 10500); // Letter cat appears when the leaf is near the 
+    
+   // ✅ Show the Clickable Flower after the first leaf finishes falling
     setTimeout(() => {
-        const secondLeaf = document.getElementById("falling-leaf-2");
-        secondLeaf.style.display = "block"; // Show second leaf
-        secondLeaf.style.animation = "leafFall2 15s ease-in-out forwards"; // Start fall animation
-    }, 1000); // Delay after clicking the letter
+        const clickableFlower = document.getElementById("clickable-flower");
+        clickableFlower.style.display = "block";  // 👈 Make it visible
+        clickableFlower.classList.add("glowing"); // 👈 Add glow effect
+    }, 17000); // Appear after first leaf falls
 }
 
+document.getElementById("clickable-flower").addEventListener("click", () => {
+    console.log("Flower clicked! Starting second transition...");
 
-// 📜 Letter Click Event
-document.getElementById("clickable-letter").addEventListener("click", showLetter);
-
-
-function showLetter() {
-    console.log("Letter clicked! Starting second transition...");
-
-    // Stop bird music and start love song
+    // ✅ Stop bird music and start love song
     const birdMusic = document.getElementById("ambient-music");
     const loveSong = document.getElementById("love-song");
 
@@ -178,17 +171,20 @@ function showLetter() {
         birdMusic.pause();
         birdMusic.currentTime = 0;
     }
-
+    
     if (loveSong) {
         loveSong.volume = 0.6;
         loveSong.loop = true;
         loveSong.play().catch(error => console.log("Audio play blocked:", error));
     }
 
-    // Start second leaf animation
+    // ✅ Hide the clickable flower
+    document.getElementById("clickable-flower").style.display = "none";
+
+    // ✅ Start second leaf animation
     showSecondLeafAnimation();
 
-    // 🐱 Show new guitar & drum cats on the left after leaf is almost done falling
+    // ✅ Show new guitar & drum cats after leaf almost finishes falling
     setTimeout(() => {
         document.getElementById("new-guitar-cat").style.display = "block";
         setTimeout(() => {
@@ -203,40 +199,66 @@ function showLetter() {
         }, 50);
     }, 10000);
 
-    // ✉️ Make letter appear spinning after leaf fully falls
+    // ✅ Make the letter glow after the second leaf fully falls
     setTimeout(() => {
-        const letter = document.getElementById("paper-letter-container");
-        letter.style.display = "block"; // Make it visible
-        letter.style.top = "20%"; // ✅ Move the letter slightly higher
-        setTimeout(() => {
-            const letterText = document.getElementById("letter-text");
-            letterText.innerText = "Minh Anh,\n Happy 3-8. Thank you for being a part of my life.\n love, Duong";
-            letterText.style.opacity = "1"; // Ensure text is visible
-        }, 500); // Small delay before showing text
-    }, 15000); // 15 seconds (same duration as leaf fall animation)
-}
+        document.getElementById("paper-letter-container").classList.add("glowing");
+    }, 16000);
+});
 
-// Simulated typing effect for message
-function typeMessage(message) {
-    let index = 0;
-    let speed = 100; // Typing speed in ms
-    let noteText = document.getElementById("note-text");
-    
-    noteText.innerHTML = "";  // Clear previous text
-    
-    function typeNextCharacter() {
-        if (index < message.length) {
-            noteText.innerHTML += message[index];
-            index++;
-            setTimeout(typeNextCharacter, speed);
-        }
-    }
-
-    typeNextCharacter(); // Start typing effect
+function showSecondLeafAnimation() {
+    setTimeout(() => {
+        const secondLeaf = document.getElementById("falling-leaf-2");
+        secondLeaf.style.display = "block"; // Show second leaf
+        secondLeaf.style.animation = "leafFall2 15s ease-in-out forwards"; // Start fall animation
+    }, 1000); // Delay after clicking the letter
+     // ✅ After the 2nd leaf has fallen, make the letter clickable
+    setTimeout(() => {
+        const clickableLetter = document.getElementById("clickable-letter");
+        clickableLetter.style.display = "block";  // 👈 Make it visible
+        clickableLetter.classList.add("glowing"); // 👈 Add glow effect
+    }, 17000); // Same duration as 2nd leaf fall
 }
 
 
-// Show quiz results
+// 📜 Letter Click Event
+document.getElementById("clickable-letter").addEventListener("click", showLetter);
+
+
+function showLetter() {
+    console.log("Letter clicked! Revealing love letter...");
+
+    const letter = document.getElementById("clickable-letter");
+
+    // ✉️ Stop glowing and disable clicking
+    letter.classList.remove("glowing");
+    letter.style.pointerEvents = "none"; 
+}
+
+// Function to move text slightly up
+function moveTextUp() {
+    const letterText = document.getElementById("letter-text");
+    letterText.classList.add("move-up"); // Apply smooth movement
+}
+
+let typingTimeout; // Store timeout reference to prevent duplication
+
+function typeMessage() {
+    let letters = document.querySelectorAll(".letter"); // Select all letters
+    let delay = 150; // Adjust speed (higher = slower effect)
+
+    // ⏳ Delay starting the text animation by 3 seconds (3000ms)
+    setTimeout(() => {
+        letters.forEach((letter, index) => {
+            setTimeout(() => {
+                letter.classList.add("show"); // Apply fade-in animation
+            }, index * delay); // Increase delay per letter for a dramatic effect
+        });
+    }, 2500); // **4-second delay before starting**
+}
+
+// 📜 Letter Click Event (Start Animation on Click)
+document.getElementById("clickable-letter").addEventListener("click", typeMessage);
+
 function showResult() {
     document.getElementById("quiz-content").innerHTML = `
         <h1>🎉 Quiz Completed! 🌟</h1>
