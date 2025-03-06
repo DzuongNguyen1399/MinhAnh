@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEIC Quiz</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+    <!-- Progress Meter UI -->
+    <div id="progress-container">
+        <div id="progress-bar"></div>
+        <p id="progress-text">Reward Progress: 0%</p>
+    </div>
+
+    <!-- Special Reward Button (Initially Hidden) -->
+    <button id="reward-button" onclick="showRewardScene()" style="display: none;">🎁 Claim Reward!</button>
+    
+    <div class="quiz-container">
+        <!-- ✅ Add ID to the big TOEIC Quiz title -->
+        <h1 id="toeic-title" class="quiz-title">TOEIC QUIZ</h1>
+    
+        <!-- ✅ New Section Selection Menu -->
+        <div id="quiz-selection">
+            <button class="quiz-option" onclick="startQuiz('listening')">🙉 Listening</button>
+            <button class="quiz-option" onclick="startQuiz('speaking')">🙊 Speaking</button>
+            <button class="quiz-option" onclick="startQuiz('reading')">🙈 Reading</button>
+        </div>
+    
+        <!-- ✅ The actual quiz (hidden at first) -->
+        <div id="quiz-content" style="display: none;">
+            <p id="question">Loading question...</p>
+            <div class="options">
+                <button id="option1" onclick="checkAnswer(0)">Option 1</button>
+                <button id="option2" onclick="checkAnswer(1)">Option 2</button>
+                <button id="option3" onclick="checkAnswer(2)">Option 3</button>
+                <button id="option4" onclick="checkAnswer(3)">Option 4</button>
+            </div>
+            <p id="score">Score: 0</p>
+        </div>
+    </div>
+    
+
+    <!-- ✅ Big Cat Container -->
+    <div id="big-cat-container">
+        <img id="big-cat" src="Images/cat2-removebg-preview.png" alt="Big Cat">
+        <div id="cat-eyes">
+            <img class="eye" id="eye-left" src="Images/eyes.png" alt="Left Eye">
+            <img class="eye" id="eye-right" src="Images/eyes2.png" alt="Right Eye">
+        </div>
+    </div>
+
+    <img id="idle-cat" src="Images/idlecat.png" alt="Idle Cat">
+    <img id="idle-cat-2" src="Images/Tom.png" alt="Idle Cat 2">
+    <img id="idle-cat-3" src="Images/idlecat3.png" alt="Idle Cat 3">
+    <img id="idle-cat-4" src="Images/idlecat4.png" alt="Idle Cat 4">
+    <img id="idle-cat-5" src="Images/idlecat5.png" alt="Idle Cat 5">
+    <img id="idle-cat-6" src="Images/idlecat6.png" alt="Idle Cat 6">
+    <img id="idle-cat-7" src="Images/idlecat7.png" alt="Idle Cat 7">
+    <img id="idle-cat-8" src="Images/idlecat8.png" alt="Idle Cat 8">
+    <img id="idle-cat-9" src="Images/idlecat9.png" alt="Idle Cat 9">
+
+    <!-- 🍂 Large Falling Autumn Leaf -->
+    <img id="falling-leaf" src="Images/autumn-leaf.png" alt="Falling Leaf">
+
+    <!-- Reward Scene (Initially Hidden) -->
+    <div id="reward-scene" style="display: none;">
+
+        <!-- 🎶 Background Ambient Music -->
+        <audio id="ambient-music" loop>
+            <source src="Audio/birds.mp3" type="audio/mpeg">
+        </audio>
+
+       <!-- 🐱 Flower Cat - Positioned Individually -->
+        <img id="flower-cat" src="Images/flower-cat.png" alt="Cat with Flowers">
+
+        <!-- 🐱 Letter Cat - Positioned Individually -->
+        <div id="letter-cat-container">
+            <img id="letter-cat" src="Images/letter-cat.png" alt="Cat with Letter">
+            <img id="clickable-letter" src="Images/letter.png" alt="Clickable Letter" onclick="showLetter()">
+        </div>
+
+                <!-- 🐱 NEW Cats (Appear on the Left) -->
+        <img id="new-guitar-cat" src="Images/new-guitar-cat.png" alt="Cat Playing Guitar" style="display: none;">
+        
+        <img id="new-drum-cat" src="Images/new-drum-cat.png" alt="Cat Playing Drums" style="display: none;">
+       
+
+        <!-- 🍂 Large Falling Autumn Leaf for Second Transition -->
+        <img id="falling-leaf-2" src="Images/autumn-leaf.png" alt="Falling Leaf">
+
+       <!-- 📜 Letter that Appears Immediately -->
+        <div id="paper-letter-container">
+            <img id="paper-letter" src="Images/letter-paper.png" alt="Letter Paper">
+            <p id="letter-text"></p>
+        </div>
+
+        <!-- 🎶 Love Song for the Letter Scene -->
+        <audio id="love-song">
+            <source src="Audio/love-song.mp3" type="audio/mpeg">
+        </audio>
+            </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,613 @@
+/* Make the whole page look clean */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #fbe7e7; /* Soft pink background */
+    overflow: hidden; /* Prevent scrolling */
+    height: 100vh; /* Make sure content fits the viewport */
+    margin: 0; /* Remove default margins */
+    padding: 0; /* Remove default padding */
+}
+
+/* 🔵 Progress Bar Container */
+#progress-container {
+    width: 200px;
+    height: 30px;
+    border: 2px solid black;
+    background-color: lightgray;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* 🔵 Progress Bar Fill */
+#progress-bar {
+    width: 0%;
+    height: 100%;
+    background-color: green;
+}
+
+/* 🎁 Reward Button */
+#reward-button {
+    position: fixed;
+    top: 60px;
+    right: 20px;
+    padding: 10px 15px;
+    font-size: 16px;
+    background-color: gold;
+    border: none;
+    cursor: pointer;
+    display: none;
+}
+
+
+
+/* Style the heading */
+h1 {
+    color: #e91e63; /* Pink color */
+}
+/* 🎯 Style for Quiz Options */
+#quiz-selection {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.quiz-option {
+    font-size: 18px;
+    padding: 12px 20px;
+    margin: 10px;
+    background-color: #ffcc00;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.quiz-option:hover {
+    background-color: #ffaa00;
+}
+
+/* Style the quiz container */
+.quiz-container {
+    background: white;
+    padding: 20px;
+    max-width: 400px;
+    margin: auto;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    
+}
+
+/* Style the answer buttons */
+button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin: 5px;
+    background: #ff4081;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Change button color when hovered */
+button:hover {
+    background: #d81b60;
+}
+
+#cat-container img {
+    position: absolute;
+    width: 80px;
+    height: auto;
+    transition: transform 0.3s;
+}
+
+/* When hovering over a cat, it wiggles */
+#cat-container img:hover {
+    transform: rotate(10deg);
+}
+
+
+/* 🐱 Ensure the Big Cat is Visible */
+#big-cat-container {
+    position: fixed;
+    bottom: 0; /* Sit at the bottom of the screen */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px; /* Adjust size based on your image */
+    height: auto;
+    z-index: 999; /* Ensure it's above the quiz */
+}
+
+/* 👀 Ensure the Eyes Stay in Place */
+#cat-eyes {
+    position: absolute;
+    top: 50%; /* Center based on cat face */
+    left: 50%;
+    transform: translate(-50%, -50%); /* Ensure eyes start in the correct place */
+    display: flex;
+    justify-content: space-between;
+    width: 100px; /* Control the spacing */
+}
+
+/* 👁️ Individual Eye Styling */
+.eye {
+    width: 42px;
+    height: 42px;
+    position: absolute;
+    transform: translate(-50%, -50%); /* Fix any shifting */
+}
+
+/* 🎯 Left Eye Position */
+#eye-left {
+    left: 18px; /* Adjust as needed */
+    top: -65px; /* Adjust as needed */
+}
+
+/* 🎯 Right Eye Position */
+#eye-right {
+    right: -18px; /* Adjust as needed */
+    top: -65px; /* Adjust as needed */
+}
+
+
+/* 🐱 Idle Cat - Start Off-Screen and Rotated */
+#idle-cat {
+    position: fixed;
+    top: 5%;  /* Move it to the vertical center */
+    left: -300px;  /* Start off-screen */
+    width: 150px;  /* Adjust size */
+    height: auto;
+    transform: rotate(90deg);  /* ✅ Rotate the cat to peek sideways */
+    transform-origin: center center;  /* Rotate around its center */
+    transition: left 2s ease-in-out;  /* Smooth slide-in */
+}
+
+/* 🎯 Slide-in Class (Moves Cat Into View) */
+.slide {
+    left: -60px !important;  /* ✅ Moves cat into the screen */
+}
+
+
+/* 🐱 Idle Cat 2 (Tom) - Peeking from Right (Now Slides Properly) */
+#idle-cat-2 {
+    position: fixed;
+    top: 30%;  /* Slightly lower */
+    right: 0px;  /* ✅ Make sure Tom starts at the correct position */
+    transform: translateX(150%);  /* ✅ Moves Tom completely off-screen */
+    width: 200px;
+    height: auto;
+    transform-origin: center center;
+    transition: transform 2s ease-in-out;  /* ✅ Smooth slide-in effect */
+}
+.slide-2 {
+    transform: translateX(5%) !important;  /* ✅ Moves Tom into view */
+}
+
+/* 🐱 Idle Cat 3 - Peeking from Left (Beneath Idle Cat 1) */
+#idle-cat-3 {
+    position: fixed;
+    top: 40%;  /* Slightly lower */
+    left: -150px;  /* ✅ Make sure Tom starts at the correct position */
+    width: 120px;
+    height: auto;
+    transform-origin: center center;  /* Rotate around its center */
+    transition: left 2s ease-in-out;  /* Smooth slide-in */
+}
+
+.slide-3 {
+    left: -10px !important;  /* ✅ Moves cat into the screen */
+}
+
+
+
+/* 🐱 Idle Cat 4 - Peeking from Left (Beneath Idle Cat 3) */
+#idle-cat-4 {
+    position: fixed;
+    top: 75%;  /* Slightly lower */
+    left: -150px;  /* ✅ Make sure  starts at the correct position */
+    width: 145px;
+    height: auto;
+    transform-origin: center center;  /* Rotate around its center */
+    transition: left 2s ease-in-out;  /* Smooth slide-in */
+}
+
+.slide-4 {
+    left: 0px !important;  /* ✅ Moves cat into the screen */
+}
+
+/* 🐱 Idle Cat 5 - Peeking from right (Beneath Idle Cat 2) */
+#idle-cat-5 {
+    position: fixed;
+    top: 75%;  /* Slightly lower */
+    right: -150px;  /* ✅ Make sure it starts at the correct position */
+    width: 145px;
+    height: auto;
+    transform-origin: center center;  /* Rotate around its center */
+    transition: right 2s ease-in-out;  /* Smooth slide-in */
+}
+
+.slide-5 {
+    right: 0px !important;  /* ✅ Moves cat into the screen */
+}
+
+/* 🐱 Idle Cat 6 - Peeking from Bottom */
+#idle-cat-6 {
+    position: fixed;
+    bottom: -200px;  /* Start slightly off-screen */
+    left: 20%;  /* Center horizontally */
+    transform: translateX(-20%);  /* Ensure perfect centering */
+    width: 200px;
+    height: auto;
+    transition: bottom 2s ease-in-out;  /* Smooth slide-up effect */
+}
+
+/* 🎯 Slide-in Class (Moves Cat Up to Peek) */
+.slide-6 {
+    bottom: 0px !important;  /* Moves cat slightly up to peek */
+}
+
+/* 🐱 Idle Cat 7 - Peeking from Bottom */
+#idle-cat-7 {
+    position: fixed;
+    bottom: -200px;  /* Start slightly off-screen */
+    left: 80%;  /* Center horizontally */
+    transform: translateX(-80%);  /* Ensure perfect centering */
+    width: 200px;
+    height: auto;
+    transition: bottom 2s ease-in-out;  /* Smooth slide-up effect */
+}
+
+/* 🎯 Slide-in Class (Moves Cat Up to Peek) */
+.slide-7 {
+    bottom: 0px !important;  /* Moves cat slightly up to peek */
+}
+
+/* 🐱 Idle Cat 8 - Peeking from top */
+#idle-cat-8 {
+    position: fixed;
+    top: -200px;  /* Start slightly off-screen */
+    left: 80%;  /* Center horizontally */
+    transform: translateX(-80%);  /* Ensure perfect centering */
+    width: 250px;
+    height: auto;
+    transition: top 2s ease-in-out;  /* Smooth slide-up effect */
+}
+
+/* 🎯 Slide-in Class (Moves Cat down to Peek) */
+.slide-8 {
+    top: 0px !important;  /* Moves cat slightly down to peek */
+}
+
+/* 🐱 Idle Cat 9 - Peeking from top */
+#idle-cat-9 {
+    position: fixed;
+    top: -450px;  /* Start slightly off-screen */
+    left: 30%;  /* Center horizontally */
+    transform: translateX(-20%);  /* Ensure perfect centering */
+    width: 280px;
+    height: auto;
+    transition: top 2s ease-in-out;  /* Smooth slide-up effect */
+}
+
+/* 🎯 Slide-in Class (Moves Cat down to Peek) */
+.slide-9 {
+    top: -90px !important;  /* Moves cat slightly down to peek */
+}
+
+
+/* 🌿 Dreamy Background - Start Blurry & Fade In */
+#reward-scene {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url("Images/garden.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0; /* Start fully invisible */
+    filter: blur(15px); /* Start with strong blur */
+    transition: opacity 2s ease-in-out, filter 2s ease-in-out;
+    display: none; /* Initially hidden */
+    z-index: 100
+}
+
+/* 🐱 Flower Cat - Start Hidden */
+#flower-cat {
+    position: fixed;
+    bottom: 0px;
+    right: 0px;
+    width: 210px;
+    height: auto;
+    opacity: 0; /* Start Invisible */
+    display: none; /* Ensure it's completely hidden */
+    transition: opacity 1.5s ease-in-out;
+    z-index: 300
+}
+
+/* 🐱 Letter Cat - Start Hidden */
+#letter-cat-container {
+    position: fixed;
+    bottom: -50px;
+    right: 280px;
+    width: 180px;
+    height: auto;
+    opacity: 0; /* Start Invisible */
+    display: none; /* Ensure it's completely hidden */
+    transition: opacity 1.5s ease-in-out;
+    z-index: 300
+}
+
+/* 🐱 Letter Cat Image */
+#letter-cat {
+    width: 150%;  /* Ensures it scales with the container */
+    height: auto; /* Keeps aspect ratio */
+}
+
+/* ✉️ Clickable Letter - Overlay on Letter Cat */
+#clickable-letter {
+    position: absolute;
+    top: 51%; /* Adjust this to align with the letter */
+    left: 74%;
+    transform: translate(-50%, -50%);
+    width: 260px; /* Adjust letter size */
+    cursor: pointer;
+    transition: filter 0.3s ease-in-out;
+}
+
+/* ✨ Glow Effect When Hovering Over Letter */
+#clickable-letter:hover {
+    filter: brightness(1.5) drop-shadow(0px 0px 10px yellow);
+}
+
+/* 📝 Letter Note */
+#note-container {
+    width: 300px;
+    height: 200px;
+    background-color: white;
+    border: 2px solid black;
+    padding: 10px;
+    font-size: 18px;
+    font-family: cursive;
+    text-align: center;
+}
+
+/* 🍂 Large Falling Leaf - Slightly Right */
+#falling-leaf {
+    position: fixed;
+    top: -1000px; /* Start way above the screen */
+    left: 79%;  /* Shift right from center */
+    transform: translateX(-50%) rotate(0deg); /* Keep position flexible */
+    width: 910px; /* Adjust size */
+    height: auto;
+    opacity: 1;
+    z-index: 1000; /* Ensure it covers the cats */
+    display: none; /* Initially hidden */
+    
+    /* 🔹 Apply the falling animation */
+    animation: leafFall 15s ease-in-out forwards;
+}
+
+/* 🍂 Leaf Falling Animation */
+@keyframes leafFall {
+    /* 🌿 Entry Phase (Fast Falling & Spinning) */
+    0% {
+        top: -1000px;  
+        left: 82%;  
+        transform: translateX(-50%) rotate(10deg);
+    }
+    10% {
+        top: -800px;
+        left: 80%;
+        transform: translateX(-50%) rotate(25deg);
+    }
+    20% {
+        top: -600px;
+        left: 84%;
+        transform: translateX(-50%) rotate(15deg);
+    }
+    30% {
+        top: -400px;
+        left: 78%;
+        transform: translateX(-50%) rotate(35deg);
+    }
+    40% {
+        top: -200px;
+        left: 85%;
+        transform: translateX(-50%) rotate(-10deg);
+    }
+
+    /* 🌿 Slow Phase (Between 10s - 14s) - Subtle Rotation */
+    50% {
+        top: 10vh;
+        left: 79%;
+        transform: translateX(-50%) rotate(20deg);
+    }
+   
+    60% {
+        top: 30vh;
+        left: 83%;
+        transform: translateX(-50%) rotate(17deg); /* Even less */
+    }
+   
+    70% {
+        top: 50vh;
+        left: 80%;
+        transform: translateX(-50%) rotate(15deg); /* Soft rotation */
+    }
+
+    /* 🌿 Final Floating & Smooth Descent */
+    80% {
+        top: 70vh;
+        left: 82%;
+        transform: translateX(-50%) rotate(12deg);
+    }
+    90% {
+        top: 85vh;
+        left: 80%;
+        transform: translateX(-50%) rotate(10deg);
+    }
+    100% {
+        top: 100vh;  
+        left: 82%;
+        transform: translateX(-50%) rotate(5deg); /* Minimal rotation */
+    }
+}
+
+
+
+
+/* 🍂 Second Falling Leaf - Starts Off-Screen (Left Side) */
+#falling-leaf-2 {
+    position: fixed;
+    top: -1000px;  /* Start way above screen */
+    left: 15%;  /* Shift to the left side */
+    transform: translateX(-50%) rotate(0deg); 
+    width: 910px;
+    height: auto;
+    opacity: 1;
+    z-index: 1000; 
+    display: none;
+    animation: leafFall2 15s ease-in-out forwards; /* Use new animation */
+}
+
+/* 🍂 Leaf Fall Animation for Left Side */
+@keyframes leafFall2 {
+    /* 🌿 Entry Phase (Fast Falling & Spinning) */
+    0% {
+        top: -1000px;  
+        left: 13%;  
+        transform: translateX(-50%) rotate(10deg);
+    }
+    10% {
+        top: -800px;
+        left: 15%;
+        transform: translateX(-50%) rotate(25deg);
+    }
+    20% {
+        top: -600px;
+        left: 11%;
+        transform: translateX(-50%) rotate(15deg);
+    }
+    30% {
+        top: -400px;
+        left: 17%;
+        transform: translateX(-50%) rotate(35deg);
+    }
+    40% {
+        top: -200px;
+        left: 10%;
+        transform: translateX(-50%) rotate(-10deg);
+    }
+
+    /* 🌿 Slow Phase (Between 10s - 14s) - Subtle Rotation */
+    50% {
+        top: 10vh;
+        left: 16%;
+        transform: translateX(-50%) rotate(20deg);
+    }
+   
+    60% {
+        top: 30vh;
+        left: 12%;
+        transform: translateX(-50%) rotate(17deg); /* Even less */
+    }
+   
+    70% {
+        top: 50vh;
+        left: 15%;
+        transform: translateX(-50%) rotate(15deg); /* Soft rotation */
+    }
+
+    /* 🌿 Final Floating & Smooth Descent */
+    80% {
+        top: 70vh;
+        left: 13%;
+        transform: translateX(-50%) rotate(12deg);
+    }
+    90% {
+        top: 85vh;
+        left: 11%;
+        transform: translateX(-50%) rotate(10deg);
+    }
+    100% {
+        top: 100vh;  
+        left: 14%;
+        transform: translateX(-50%) rotate(5deg); /* Minimal rotation */
+    }
+}
+
+
+
+
+
+/* 🐱 New Cats (Appear on the Left) */
+#new-guitar-cat {
+    position: fixed;
+    bottom: 0px;
+    left: 300px; /* Appears on the left */
+    width: 280px;
+    height: auto;
+    opacity: 0;
+    display: none;
+    transition: opacity 1.5s ease-in-out;
+    z-index: 300
+}
+
+/* 🥁 Fix Drum Cat Position */
+#new-drum-cat {
+    position: fixed;
+    bottom: -50px; /* Place at the bottom of the screen */
+    left: -100px; /* Shift slightly right so it’s visible */
+    width: 450px; /* Adjust size */
+    height: auto;
+    opacity: 0;
+    display: none; /* Start hidden */
+    transition: opacity 1.5s ease-in-out;
+    z-index: 300
+}
+
+
+/* 📜 Ensure the Letter Image Scales Properly */
+#paper-letter {
+    width: 100%; /* Use 100% of the container */
+    max-width: 1200px; /* Limit size */
+    height: auto;
+}
+
+
+
+/* 📜 Love Letter - Centered at the Top */
+#paper-letter-container {
+    position: fixed;
+    top: 15%; /* Moves letter higher */
+    left: 50%;
+    transform: translate(-50%, 0) scale(1.4); /* Scale the whole letter but keep it centered */
+    width: 50vw; /* Responsive size */
+    max-width: 800px; /* Prevents it from getting too large */
+    height: auto;
+    display: none; /* Initially hidden */
+    text-align: center;
+    z-index: 200;
+}
+
+/* ✍️ Handwritten Text on Paper - Ensure it Scales Well */
+#letter-text {
+    position: absolute;
+    top: 30%; /* Adjust placement of text */
+    left: 50%;
+    transform: translate(-50%, -30%);
+    width: 60%; /* Keep text inside the letter */
+    font-size: 3vw; /* Responsive font size */
+    font-family: 'Dancing Script', cursive; /* Fancy handwritten font */
+    color: black; /* Ink color */
+    text-align: center;
+    line-height: 1.0; /* Improved readability */
+    z-index: 250;
+}
