@@ -9,6 +9,18 @@
 
 </head>
 <body>
+    <!-- 📜 Help Popup -->
+    <div id="help-popup" class="help-container" onclick="hideHelp()">
+        <div class="help-content">
+            <img src="Images/help-image.png" alt="Help Image">
+            <p>Bài ni cậu chỉ cần làm đúng 20 câu thui là sẽ được quà. HeHe. Goodluck !</p>
+        </div>
+    </div>
+
+    <audio id="cat-sound">
+        <source src="Audio/cat-meow.mp3" type="audio/mpeg">
+    </audio>
+
     <!-- Progress Meter UI -->
     <div id="progress-container">
         <div id="progress-bar"></div>
@@ -16,18 +28,17 @@
     </div>
 
     <!-- Special Reward Button (Initially Hidden) -->
-    <button id="reward-button" onclick="showRewardScene()" style="display: none;">🎁 Claim Reward!</button>
+    <img id="reward-button" src="Images/cat-paw.png" alt="Claim Reward" onclick="showRewardScene()">
     
     <div class="quiz-container">
         <!-- ✅ Add ID to the big TOEIC Quiz title -->
         <h1 id="toeic-title" class="quiz-title">TOEIC QUIZ</h1>
     
-        <!-- ✅ New Section Selection Menu -->
-        <div id="quiz-selection">
-            <button class="quiz-option" onclick="startQuiz('listening')">🙉 Listening</button>
-            <button class="quiz-option" onclick="startQuiz('speaking')">🙊 Speaking</button>
-            <button class="quiz-option" onclick="startQuiz('reading')">🙈 Reading</button>
-        </div>
+        <!-- ✅ New Start and Help Buttons -->
+<div id="quiz-selection">
+    <button class="quiz-option" onclick="startTest()">🎯 Start Test</button>
+    <button class="quiz-option" onclick="showHelp()">❓ HELP</button>
+</div>
     
         <!-- ✅ The actual quiz (hidden at first) -->
         <div id="quiz-content" style="display: none;">
@@ -38,7 +49,7 @@
                 <button id="option3" onclick="checkAnswer(2)">Option 3</button>
                 <button id="option4" onclick="checkAnswer(3)">Option 4</button>
             </div>
-            <p id="score">Score: 0</p>
+            
         </div>
     </div>
     
@@ -100,29 +111,69 @@
             <p id="letter-text"></p>
         </div>
 
-            <!-- 📜 Love Letter Message -->
-            <p id="letter-text">
-                <span class="letter">M</span><span class="letter">i</span><span class="letter">n</span><span class="letter">h</span> 
-                <span class="letter">A</span><span class="letter">n</span><span class="letter">h</span>,
-                <br>
-                <span class="letter">H</span><span class="letter">a</span><span class="letter">p</span><span class="letter">p</span><span class="letter">y</span> 
-                <span class="letter">8</span>-<span class="letter">3</span>.
-                <br>
-                <span class="letter">T</span><span class="letter">h</span><span class="letter">a</span><span class="letter">n</span><span class="letter">k</span> 
-                <span class="letter">y</span><span class="letter">o</span><span class="letter">u</span> 
-                <span class="letter">f</span><span class="letter">o</span><span class="letter">r</span> 
-                <span class="letter">b</span><span class="letter">e</span><span class="letter">i</span><span class="letter">n</span><span class="letter">g</span> 
-                <span class="letter">a</span> 
-                <span class="letter">p</span><span class="letter">a</span><span class="letter">r</span><span class="letter">t</span> 
-                <span class="letter">o</span><span class="letter">f</span> 
-                <span class="letter">m</span><span class="letter">y</span> 
-                <span class="letter">l</span><span class="letter">i</span><span class="letter">f</span><span class="letter">e</span>.
-                <br><br>
-                <span class="letter">L</span><span class="letter">o</span><span class="letter">v</span><span class="letter">e</span>,
-                <br>
-                <span class="letter">D</span><span class="letter">u</span><span class="letter">o</span><span class="letter">n</span><span class="letter">g</span>
-            </p>
-            
+           <!-- 📜 Love Letter Message -->
+        <p id="letter-text">
+            <span class="letter">M</span><span class="letter">i</span><span class="letter">n</span><span class="letter">h</span> 
+            <span class="letter">A</span><span class="letter">n</span><span class="letter">h</span>,
+            <br><br>
+        
+            <span class="letter">O</span><span class="letter">n</span> 
+            <span class="letter">t</span><span class="letter">h</span><span class="letter">i</span><span class="letter">s</span> 
+            <span class="letter">s</span><span class="letter">p</span><span class="letter">e</span><span class="letter">c</span><span class="letter">i</span><span class="letter">a</span><span class="letter">l</span> 
+            <span class="letter">d</span><span class="letter">a</span><span class="letter">y</span>, 
+            <span class="letter">I</span> 
+            <span class="letter">j</span><span class="letter">u</span><span class="letter">s</span><span class="letter">t</span> 
+            <span class="letter">w</span><span class="letter">a</span><span class="letter">n</span><span class="letter">t</span> 
+            <span class="letter">t</span><span class="letter">o</span> 
+            <span class="letter">r</span><span class="letter">e</span><span class="letter">m</span><span class="letter">i</span><span class="letter">n</span><span class="letter">d</span> 
+            <span class="letter">y</span><span class="letter">o</span><span class="letter">u</span> 
+            <span class="letter">h</span><span class="letter">o</span><span class="letter">w</span> 
+            <span class="letter">m</span><span class="letter">u</span><span class="letter">c</span><span class="letter">h</span> 
+            <span class="letter">y</span><span class="letter">o</span><span class="letter">u</span> 
+            <span class="letter">m</span><span class="letter">e</span><span class="letter">a</span><span class="letter">n</span> 
+            <span class="letter">t</span><span class="letter">o</span> 
+            <span class="letter">m</span><span class="letter">e</span>.
+            <br><br>
+        
+            <span class="letter">I</span> 
+            <span class="letter">w</span><span class="letter">i</span><span class="letter">s</span><span class="letter">h</span> 
+            <span class="letter">y</span><span class="letter">o</span><span class="letter">u</span> 
+            <span class="letter">n</span><span class="letter">o</span><span class="letter">t</span><span class="letter">h</span><span class="letter">i</span><span class="letter">n</span><span class="letter">g</span> 
+            <span class="letter">b</span><span class="letter">u</span><span class="letter">t</span> 
+            <span class="letter">h</span><span class="letter">a</span><span class="letter">p</span><span class="letter">p</span><span class="letter">i</span><span class="letter">n</span><span class="letter">e</span><span class="letter">s</span><span class="letter">s</span>— 
+            <span class="letter">n</span><span class="letter">o</span><span class="letter">t</span> 
+            <span class="letter">j</span><span class="letter">u</span><span class="letter">s</span><span class="letter">t</span> 
+            <span class="letter">t</span><span class="letter">o</span><span class="letter">d</span><span class="letter">a</span><span class="letter">y</span>, 
+            <span class="letter">b</span><span class="letter">u</span><span class="letter">t</span> 
+            <span class="letter">e</span><span class="letter">v</span><span class="letter">e</span><span class="letter">r</span><span class="letter">y</span> 
+            <span class="letter">s</span><span class="letter">i</span><span class="letter">n</span><span class="letter">g</span><span class="letter">l</span><span class="letter">e</span> 
+            <span class="letter">d</span><span class="letter">a</span><span class="letter">y</span> 
+            <span class="letter">o</span><span class="letter">f</span> 
+            <span class="letter">y</span><span class="letter">o</span><span class="letter">u</span><span class="letter">r</span> 
+            <span class="letter">l</span><span class="letter">i</span><span class="letter">f</span><span class="letter">e</span>.
+            <br><br>
+        
+            <span class="letter">I</span><span class="letter">’</span><span class="letter">m</span> 
+            <span class="letter">v</span><span class="letter">e</span><span class="letter">r</span><span class="letter">y</span> 
+            <span class="letter">g</span><span class="letter">r</span><span class="letter">a</span><span class="letter">t</span><span class="letter">e</span><span class="letter">f</span><span class="letter">u</span><span class="letter">l</span> 
+            <span class="letter">t</span><span class="letter">o</span> 
+            <span class="letter">h</span><span class="letter">a</span><span class="letter">v</span><span class="letter">e</span> 
+            <span class="letter">m</span><span class="letter">e</span><span class="letter">t</span> 
+            <span class="letter">y</span><span class="letter">o</span><span class="letter">u</span>.
+            <br><br>
+        
+            <span class="letter">H</span><span class="letter">a</span><span class="letter">p</span><span class="letter">p</span><span class="letter">y</span> 
+            <span class="letter">8</span>/<span class="letter">3</span>! 
+            <span class="letter">T</span><span class="letter">h</span><span class="letter">a</span><span class="letter">n</span><span class="letter">k</span> 
+            <span class="letter">y</span><span class="letter">o</span><span class="letter">u</span> 
+            <span class="letter">f</span><span class="letter">o</span><span class="letter">r</span> 
+            <span class="letter">e</span><span class="letter">v</span><span class="letter">e</span><span class="letter">r</span><span class="letter">y</span><span class="letter">t</span><span class="letter">h</span><span class="letter">i</span><span class="letter">n</span><span class="letter">g</span>.
+            <br><br>
+        
+            <span class="letter">L</span><span class="letter">o</span><span class="letter">v</span><span class="letter">e</span>,
+            <br>
+            <span class="letter">D</span><span class="letter">u</span><span class="letter">o</span><span class="letter">n</span><span class="letter">g</span>
+        </p>
 
 
 

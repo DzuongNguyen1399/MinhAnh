@@ -1,85 +1,140 @@
 let progress = 0;  // Track progress (0 to 100)
-const progressStep = 50; // Increase by 25% per correct answer
-const maxProgress = 100; // Max limit for reward
+const progressStep = 5; // Increase by 5% per correct answer (20 questions = 100%)
+const maxCorrectAnswers = 20; // User must answer 20 correctly
+const maxProgress = 100; // Max progress limit
+let currentQuestionIndex = 0;
+let correctAnswers = 0;
 
-// Function to start quiz based on section
-function startQuiz(section) {
+// ✅ Start Test Function
+function startTest() {
     document.getElementById("quiz-selection").style.display = "none"; // Hide selection
     document.getElementById("quiz-content").style.display = "block"; // Show quiz
-
-    // Load different questions based on section
-    if (section === "listening") {
-        loadQuestions(listeningQuestions);
-    } else if (section === "speaking") {
-        loadQuestions(speakingQuestions);
-    } else {
-        loadQuestions(readingQuestions);
-    }
-}
-
-
-// Define different question sets
-const listeningQuestions = [
-    { question: "What is the synonym of 'Happy'?", answers: ["Excited", "Sad", "Angry", "Bored"], correct: 0 },
-    { question: "Which sentence is correct?", answers: ["She go to school.", "She goes to school.", "She going to school.", "She goed to school."], correct: 1 }
-];
-
-const speakingQuestions = [
-    { question: "How do you introduce yourself?", answers: ["I am name.", "My name is...", "Name my is...", "Myself name is..."], correct: 1 },
-    { question: "What do you say when you meet someone?", answers: ["Goodbye", "Hello", "Go away", "Talk later"], correct: 1 }
-];
-
-const readingQuestions = [
-    { question: "What is the past tense of 'Eat'?", answers: ["Eated", "Eats", "Ate", "Eating"], correct: 2 },
-    { question: "What is the opposite of 'Fast'?", answers: ["Quick", "Slow", "Speedy", "Rapid"], correct: 1 }
-];
-
-let currentQuestion = 0;
-let score = 0;
-let activeQuestions = [];
-
-// Function to load the correct questions
-function loadQuestions(questions) {
-    activeQuestions = questions;
-    currentQuestion = 0;
-    score = 0;
+    questions = shuffleQuestions(); // Shuffle the questions
+    currentQuestionIndex = 0;
+    correctAnswers = 0;
+    progress = 0;
+    updateProgress();
     showQuestion();
 }
 
-// Function to display the next question
+
+// ✅ Shuffle Questions Function
+function shuffleQuestions() {
+    return testQuestions.sort(() => Math.random() - 0.5);
+}
+
+// HELP Functions
+function showHelp() {
+    document.getElementById("help-popup").style.display = "flex";
+}
+
+function hideHelp() {
+    document.getElementById("help-popup").style.display = "none";
+}
+
+
+// ✅ Question Bank (Shuffled Every Test)
+const testQuestions = [
+    { question: "Dave bought ……… lamp for his mother’s birthday", answers: ["A lovely new", "A new lovely", "A lovelier new", "A new lovelier"], correct: 0 },
+    { question: "The holiday season is by far the busiest time of year for ……… stores", answers: ["Of the most", "Most", "The most of", "Mostly"], correct: 1 },
+    { question: "I’m sure that I would enjoy ……… one, the red wine or the white wine", answers: ["Others", "Both", "Either", "Some"], correct: 2 },
+    { question: "The committee rejected the proposal ______ they did not think it was practical.", answers: ["or", "but", "though", "because"], correct: 3 },
+    { question: "Susie ______ phoned ______ wrote after she left home.", answers: ["either, or", "neither, nor", "while, and", "though, or"], correct: 1 },
+    { question: "Keep the food covered ______ the flies will contaminate it.", answers: ["or", "and", "until", "though"], correct: 0 },
+    { question: "I did not go to the show ______ I had already seen it.", answers: ["until", "because", "so", "but"], correct: 1 },
+    { question: "An airport is a place (planes land) ….", answers: ["Where planes land", "Which planes land", "That planes land", "Which planes land"], correct: 0 },
+    { question: "The company’s new database system will be installed and running ……… the end of the year.", answers: ["In", "From", "By", "On"], correct: 2 },
+    { question: "……… has there been more of a demand for e-business courses at universities than there is now", answers: ["Always", "Never", "Rare", "Often"], correct: 1 },
+    { question: "That decision of ……… to repaint the house now was a very smart one", answers: ["Your", "You", "Yourself", "Yours"], correct: 3 },
+    { question: "After Larry ….. the film on TV, he decided to buy the book.", answers: ["Have seen", "Had seen", "Had been seeing", "Saw"], correct: 1 },
+    { question: "The sun …… in the East.", answers: ["Rise", "Rises", "Rising", "Has risen"], correct: 1 },
+    { question: "I …. to visit you yesterday, but you ….. not at home.", answers: ["Wanted/were", "Want/are", "Want/were", "want, is"], correct: 0 },
+    { question: "Last winter she ____________ (drive) to Germany.", answers: ["Drove", "Drived", "Did drive", "driven"], correct: 0 },
+    { question: "I don't think he will remember the appointment _____ you remind him.", answers: ["so", "if", "unless", "lest"], correct: 2 },
+    { question: "_____ he was not interested in music, he agreed to go to the concert.", answers: ["Though", "While", "For", "Since"], correct: 0 },
+    { question: "He will show us around himself _____ send someone else.", answers: ["and", "if", "or", "so"], correct: 2 },
+    { question: "_____ the teacher explained the lesson several times, some of the students still did not understand it.", answers: ["Although", "Even if", "Unless", "Since"], correct: 0 },
+    { question: "While Tom (play)…… the piano, his mother was doing the washing-up.", answers: ["Was playing", "Were playing", "Played", "Play"], correct: 0 },
+    { question: "He had taught in this school before he (leave)____ for London.", answers: ["left", "leave", "leaving", "had left"], correct: 0 },
+    { question: "Duong sometimes wishes he ____ a cat.", answers: ["Is", "was", "were", "will be"], correct: 2 },
+    { question: "Minh Anh likes neither Pho ___ Shrimp.", answers: ["or", "and", "nor", "but"], correct: 2 },
+    { question: "Minh Anh rarely ____ rice", answers: ["eat", "eats", "eating", "is eating"], correct: 1 },
+    { question: "Noone____ she has 3 birthdays every year", answers: ["believe", "believes", "will believes","is believe"], correct: 1 },
+    { question: "Duong will always____ Minh Anh!", answers: ["trust", "trusts", "be trusted", "trusting"], correct: 0 },
+    { question: "There is a small____ between 'lạp sườn' and 'lạp xưởng'.", answers: ["different", "difference", "differ", "differences"], correct: 1 },
+    { question: "If i ___ an animal, I would be a cat...", answers: ["am", "was", "were", "would"], correct: 2 },
+    { question: "Minh Anh has great____ in herself!", answers: ["confident", "confidence", "confide", "confidents"], correct: 1 },
+    { question: "Does Minh Anh believe ___ ghosts? She probably does! haha", answers: ["in", "on", "about", "at"], correct: 0 },
+    { question: "Minh Anh is hanging out with____ Thuy and Ha ", answers: ["either", "neither", "both", "also"], correct: 2 },
+    { question: "Duong ____ for her messages everyday. EVERYDAY.", answers: ["waited", "wait", "waits", "waiting"], correct: 2 },
+    { question: "Duong is coming back to vietnam ____ March, 2025. HEHE", answers: ["on", "at", "in", "with"], correct: 2 },
+    { question: "Ha said she _____ abandoned by Minh Anh and Thuy :') ", answers: ["is", "was", "were", "will"], correct: 1 },
+    { question: "Ha ___ milk tea for Minh Anh yesterday ", answers: ["buy", "buyed", "bought", "bot"], correct: 2 },
+    { question: "She ___ too much tea earlier so now she can't sleep", answers: ["drink", "drinks", "drunk", "drank"], correct: 3 },
+    { question: "Both Ha and Minh Anh ___ for the roasted chicken last evening", answers: ["pay", "payed", "paid", "paided"], correct: 2 },
+    { question: "She only ____ for 5 hours last night because she drank too much tea", answers: ["sleep", "sleeps", "sleeped", "slept"], correct: 3 },
+    { question: "I ___ in love when I saw her picture the first time ", answers: ["fall", "falled", "fell", "full"], correct: 2 }
+];
+// ✅ Show Question Function
 function showQuestion() {
-    if (currentQuestion >= activeQuestions.length) {
+    if (correctAnswers >= maxCorrectAnswers) {
         showResult();
         return;
     }
 
-    document.getElementById("question").innerText = activeQuestions[currentQuestion].question;
-    document.getElementById("option1").innerText = activeQuestions[currentQuestion].answers[0];
-    document.getElementById("option2").innerText = activeQuestions[currentQuestion].answers[1];
-    document.getElementById("option3").innerText = activeQuestions[currentQuestion].answers[2];
-    document.getElementById("option4").innerText = activeQuestions[currentQuestion].answers[3];
+    const questionObj = questions[currentQuestionIndex];
+    document.getElementById("question").innerText = questionObj.question;
+    document.getElementById("option1").innerText = questionObj.answers[0];
+    document.getElementById("option2").innerText = questionObj.answers[1];
+    document.getElementById("option3").innerText = questionObj.answers[2];
+    document.getElementById("option4").innerText = questionObj.answers[3];
 }
 
-// Function to check the answer
+// ✅ Show Question Function
+function showQuestion() {
+    if (correctAnswers >= maxCorrectAnswers) {
+        showResult();
+        return;
+    }
+
+    const questionObj = questions[currentQuestionIndex];
+    document.getElementById("question").innerText = questionObj.question;
+    document.getElementById("option1").innerText = questionObj.answers[0];
+    document.getElementById("option2").innerText = questionObj.answers[1];
+    document.getElementById("option3").innerText = questionObj.answers[2];
+    document.getElementById("option4").innerText = questionObj.answers[3];
+}
+
+// ✅ Play Cat Sound when correct
+function playCatSound() {
+    const catSound = new Audio("Audio/cat-meow.mp3");
+    catSound.volume = 0.6; // Adjust volume (0.0 - 1.0)
+    catSound.play().catch(error => console.log("Audio play blocked:", error));
+}
+
+// ✅ Check Answer Function (Modified)
 function checkAnswer(answerIndex) {
-    if (answerIndex === activeQuestions[currentQuestion].correct) {
-        score++;
+    if (questions[currentQuestionIndex].correct === answerIndex) {
+        correctAnswers++;
+        let catSound = document.getElementById("cat-sound");
+        catSound.currentTime = 0;  // Reset time in case it's already playing
+        catSound.volume = 0.7;  // Adjust volume (0.0 - 1.0)
+        catSound.play().catch(error => console.log("Audio play blocked:", error));
+
         updateProgress();
     }
-    currentQuestion++;
+    currentQuestionIndex++; // Move to next question
     showQuestion();
 }
 
-// Update progress meter
+// ✅ Update Progress Function
 function updateProgress() {
-    progress += progressStep;
-    if (progress > maxProgress) progress = maxProgress; // Limit to 100%
-    
+    progress = (correctAnswers / maxCorrectAnswers) * 100;
     document.getElementById("progress-bar").style.width = `${progress}%`;
     document.getElementById("progress-text").innerText = `Reward Progress: ${progress}%`;
 
     // Show reward button when full
-    if (progress === maxProgress) {
+    if (correctAnswers >= maxCorrectAnswers) {
         document.getElementById("reward-button").style.display = "block";
     }
 }
@@ -234,14 +289,14 @@ function showLetter() {
         setTimeout(() => {
             letterContainer.classList.add("show-letter"); // Smooth fade-in with zoom effect
         }, 10); // Tiny delay for transition effect
-    }, 2000); // 3-second delay before letter starts appearing
+    }, 1500); // 3-second delay before letter starts appearing
 }
 
 let typingTimeout; // Store timeout reference to prevent duplication
 
 function typeMessage() {
     let letters = document.querySelectorAll(".letter"); // Select all letters
-    let delay = 150; // Adjust speed (higher = slower effect)
+    let delay = 110; // Adjust speed (higher = slower effect)
 
     // ⏳ Delay starting the text animation by 3 seconds (3000ms)
     setTimeout(() => {
@@ -250,7 +305,7 @@ function typeMessage() {
                 letter.classList.add("show"); // Apply fade-in animation
             }, index * delay); // Increase delay per letter for a dramatic effect
         });
-    }, 3000); // **4-second delay before starting**
+    }, 2500); // **4-second delay before starting**
 }
 
 // 📜 Letter Click Event (Start Animation on Click)
@@ -259,7 +314,7 @@ document.getElementById("clickable-letter").addEventListener("click", typeMessag
 function showResult() {
     document.getElementById("quiz-content").innerHTML = `
      <h1>🎉 Quiz Completed! 🌟</h1>
-     <p>Your Score: ${score} / ${activeQuestions.length}</p>
+     
      <button onclick="location.reload()">🔄 Try Again</button>
 `;
 }

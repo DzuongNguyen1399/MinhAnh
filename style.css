@@ -9,6 +9,37 @@ body {
     padding: 0; /* Remove default padding */
 }
 
+/* 📜 Help Popup */
+.help-container {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.help-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 500px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.help-content img {
+    width: 40%;
+    max-width: 300px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+}
+
+
 /* 🔵 Progress Bar Container */
 #progress-container {
     width: 200px;
@@ -29,17 +60,24 @@ body {
     background-color: green;
 }
 
-/* 🎁 Reward Button */
+/* 🐾 Glowing Cat Paw Button */
 #reward-button {
     position: fixed;
-    top: 60px;
-    right: 20px;
-    padding: 10px 15px;
-    font-size: 16px;
-    background-color: gold;
-    border: none;
+    top: 50%;  /* Move it lower to the center */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Ensure perfect centering */
+    width: 200px; /* Increase size */
+    height: auto; /* Maintain aspect ratio */
     cursor: pointer;
-    display: none;
+    display: none; /* Initially hidden */
+    filter: drop-shadow(0px 0px 20px yellow); /* Stronger glow effect */
+    transition: filter 0.5s ease-in-out, transform 0.2s ease-in-out;
+}
+
+/* 🐾 Extra Glow & Pop Effect When Hovered */
+#reward-button:hover {
+    filter: drop-shadow(0px 0px 30px gold);
+    transform: translate(-50%, -50%) scale(1.1); /* Slight pop effect */
 }
 
 
@@ -629,8 +667,8 @@ button:hover {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(1.2); /* Start zoomed out */
-    width: 50vw; /* Responsive width */
-    max-width: 800px; /* Prevents it from getting too large */
+    width: 60vw; /* Responsive width */
+    max-width: 900px; /* Prevents it from getting too large */
     height: auto;
     opacity: 0; /* Initially hidden */
     transition: opacity 5s ease-in-out; /* Slow fade-in effect */
@@ -663,14 +701,15 @@ button:hover {
 /* ✍️ Handwritten Text on Paper - Ensure it Scales Well */
 #letter-text {
     position: absolute;
-    top: 23%; /* Adjust placement of text */
-    left: 54%;
+    top: 30%; /* Adjust placement of text */
+    left: 55%;
+    max-width: 80%; /* Increase to allow more text in one line */
     transform: translate(-50%, -30%);
-    width: 75%; /* Keep text inside the letter */
-    font-size: 3vw; /* Responsive font size */
+    width: 60%; /* Keep text inside the letter */
+    font-size: 2.2vw; /* Responsive font size */
     font-family: 'Dancing Script', cursive; /* Fancy handwritten font */
     color: black; /* Ink color */
     text-align: center;
-    line-height: 1.4; /* Improved readability */
+    line-height: 1.0; /* Improved readability */
     z-index: 250;
 }
