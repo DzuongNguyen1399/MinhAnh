@@ -71,7 +71,7 @@ const testQuestions = [
     { question: "Ha said she _____ abandoned by Minh Anh and Thuy :') ", answers: ["is", "was", "were", "will"], correct: 1 },
     { question: "Ha ___ milk tea for Minh Anh yesterday ", answers: ["buy", "buyed", "bought", "bot"], correct: 2 },
     { question: "___ we stopped talking, I will always love you", answers: ["If", "Even though", "But", "Regardless"], correct: 1 },
-    { question: "He often drinks from that same mug because it was a special gift from someone special, ___ he had feelings.", answers: ["for whom", "whom", "that", "who"], correct: 0 },
+    { question: "He often drinks from that same mug because it was a special gift from someone special, ___ he had feelings.", answers: ["that", "whom", "for whom", "who"], correct: 2},
     { question: "She ___ too much tea earlier so now she can't sleep", answers: ["drink", "drinks", "drunk", "drank"], correct: 3 },
     { question: "Both Ha and Minh Anh ___ for the roasted chicken last evening", answers: ["pay", "payed", "paid", "paided"], correct: 2 },
     { question: "She only ____ for 5 hours last night because she drank too much tea", answers: ["sleep", "sleeps", "sleeped", "slept"], correct: 3 },
