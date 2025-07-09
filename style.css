@@ -39,6 +39,49 @@ body {
     border-radius: 5px;
 }
 
+/* Birthday! button (2nd child in quiz-selection) */
+#quiz-selection .quiz-option:nth-child(2) {
+    background: linear-gradient(90deg, #ffecd2 0%, #fcb69f 100%);
+    color: #d72660;
+    font-weight: bold;
+    border: 2px solid #ffb6b9;
+    box-shadow: 0 4px 20px rgba(252,182,159,0.2);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#quiz-selection .quiz-option:nth-child(2):hover {
+    transform: scale(1.05) rotate(-2deg);
+    box-shadow: 0 8px 32px rgba(252,182,159,0.4);
+}
+
+/* Confetti effect using pseudo-elements */
+#quiz-selection .quiz-option:nth-child(2)::before,
+#quiz-selection .quiz-option:nth-child(2)::after {
+    content: "🎉";
+    position: absolute;
+    font-size: 1.5em;
+    top: 8px;
+}
+#quiz-selection .quiz-option:nth-child(2)::before {
+    left: 18px;
+}
+#quiz-selection .quiz-option:nth-child(2)::after {
+    right: 18px;
+}
+
+
+/* Unique style for Birthday! button text */
+#quiz-selection .quiz-option.birthday-btn {
+    font-family: 'Pacifico', cursive;
+    font-size: 1.5em;
+    letter-spacing: 2px;
+    color: #ff69b4;
+    text-shadow: 2px 2px 8px #fff0f6, 0 0 8px #ffb6b9;
+    background: linear-gradient(90deg, #fff0f6 0%, #ffe0ec 100%);
+    border: 2px solid #ff69b4;
+}
 
 /* 🔵 Progress Bar Container */
 #progress-container {

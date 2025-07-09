@@ -32,6 +32,9 @@ function hideHelp() {
     document.getElementById("help-popup").style.display = "none";
 }
 
+function birthdayOption() {
+    alert("Happy Birthday, Minh Anh! 🎂🎉");
+}
 
 // ✅ Question Bank (Shuffled Every Test)
 const testQuestions = [
