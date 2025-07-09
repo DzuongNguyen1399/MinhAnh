@@ -33,7 +33,7 @@ function hideHelp() {
 }
 
 function birthdayOption() {
-    alert("Happy Birthday, Minh Anh! 🎂🎉");
+    alert("Will be available on 17/07/2025! 🎂🎉");
 }
 
 // ✅ Question Bank (Shuffled Every Test)
