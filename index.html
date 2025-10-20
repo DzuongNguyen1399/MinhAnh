@@ -21,38 +21,103 @@
         <source src="Audio/cat-meow.mp3" type="audio/mpeg">
     </audio>
 
+    <audio id="correct-sound">
+        <source src="Audio/correct-chime.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="rain-audio">
+        <source src="Audio/calm_rain.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="sun-audio">
+        <source src="Audio/bird_dog_sunny.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="lemon-tree-audio" loop>
+        <source src="Audio/lemontree.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="shop-music" loop>
+        <source src="Audio/shopmusic.mp3" type="audio/mpeg">
+    </audio>
+
     <!-- Progress Meter UI -->
     <div id="progress-container">
         <div id="progress-bar"></div>
         <p id="progress-text">Reward Progress: 0%</p>
     </div>
 
+    <!-- Cat Coin Counter -->
+    <div id="coin-counter" aria-live="polite">
+        <img id="coin-image" src="Images/catcoin.png" alt="Cat coin">
+        <span id="coin-count">x 0</span>
+    </div>
+
+    <button id="back-to-shop" class="back-to-shop" type="button" aria-label="Return to the shop">
+        <img src="Images/backshop.png" alt="">
+    </button>
+
     <!-- Special Reward Button (Initially Hidden) -->
     <img id="reward-button" src="Images/cat-paw.png" alt="Claim Reward" onclick="showRewardScene()">
     
 <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 
-    <div class="quiz-container">
-        <!-- ✅ Add ID to the big TOEIC Quiz title -->
-        <h1 id="toeic-title" class="quiz-title">MINH ANH'S TOEIC QUIZ</h1>
-    
-        <!-- ✅ New Start and Help Buttons -->
-<div id="quiz-selection">
-    <button class="quiz-option" onclick="startTest()">Test 1</button>
-    <button class="quiz-option birthday-btn" onclick="birthdayOption()">Birthday!</button>
-    <button class="quiz-option" style="margin-top: 32px;" onclick="showHelp()">HELP</button>
-</div>
-    
-        <!-- ✅ The actual quiz (hidden at first) -->
-        <div id="quiz-content" style="display: none;">
-            <p id="question">Loading question...</p>
-            <div class="options">
-                <button id="option1" onclick="checkAnswer(0)">Option 1</button>
-                <button id="option2" onclick="checkAnswer(1)">Option 2</button>
-                <button id="option3" onclick="checkAnswer(2)">Option 3</button>
-                <button id="option4" onclick="checkAnswer(3)">Option 4</button>
+    <!-- 🌸 Women's Day Intro Scene -->
+    <div id="womens-day-intro" class="womens-day-intro" aria-hidden="true">
+        <div class="womens-day-shop">
+            <button id="womens-day-catseller" class="womens-day-catseller" type="button" aria-label="Talk to the cat seller">
+                <img src="Images/Catseller.png" alt="Friendly cat seller" class="womens-day-catseller-image">
+            </button>
+            <button id="womens-day-flower" class="womens-day-flower" type="button" aria-label="Inspect the flower gift">
+                <img src="Images/Flowergift.png" alt="Flower gift" class="womens-day-flower-image">
+            </button>
+            <button id="womens-day-letter" class="womens-day-letter" type="button" aria-label="Inspect the letter gift" aria-hidden="true" disabled>
+                <img src="Images/lettertable.png" alt="Love letter on the table" class="womens-day-letter-image">
+            </button>
+        </div>
+    </div>
+
+    <div id="shop-item-viewer" class="shop-item-viewer" aria-hidden="true">
+        <div id="shop-item-viewer-item" class="shop-item-viewer-item" role="presentation">
+            <img id="shop-item-viewer-image" class="shop-item-viewer-image" src="" alt="">
+            <span id="shop-item-price-tag" class="shop-item-price-tag">
+                <img src="Images/pricetag.png" alt="">
+                <span id="shop-item-price-value" class="shop-item-price-value" aria-hidden="true"></span>
+            </span>
+        </div>
+        <p id="shop-item-feedback" class="shop-item-feedback" role="status" aria-live="assertive"></p>
+        <button id="shop-item-purchase" class="shop-item-purchase" type="button">
+            Purchase
+        </button>
+    </div>
+
+    <div class="quiz-container" id="quiz-container">
+        <button type="button" id="quiz-toggle-bar" class="quiz-toggle-bar" aria-expanded="true" aria-controls="quiz-collapse-body">
+            <span class="visually-hidden">Toggle quiz container</span>
+        </button>
+        <div id="quiz-collapse-body" class="quiz-collapse-body">
+            <!-- ✅ Add ID to the big TOEIC Quiz title -->
+            <h1 id="toeic-title" class="quiz-title">MINH ANH'S TOEIC QUIZ</h1>
+        
+            <!-- ✅ New Start and Help Buttons -->
+    <div id="quiz-selection">
+        <button class="quiz-option" onclick="startTest()">International Women's Day</button>
+        <button class="quiz-option birthday-btn" onclick="birthdayOption()">Minh Anh's Birthday</button>
+        <button class="quiz-option" onclick="start2010Test()">Vietnamese Women's Day</button>
+        <button class="quiz-option" onclick="showHelp()">HELP</button>
+    </div>
+        
+            <!-- ✅ The actual quiz (hidden at first) -->
+            <div id="quiz-content" style="display: none;">
+                <p id="question">Loading question...</p>
+                <div class="options">
+                    <button id="option1" onclick="checkAnswer(0)">Option 1</button>
+                    <button id="option2" onclick="checkAnswer(1)">Option 2</button>
+                    <button id="option3" onclick="checkAnswer(2)">Option 3</button>
+                    <button id="option4" onclick="checkAnswer(3)">Option 4</button>
+                </div>
+                
             </div>
-            
         </div>
     </div>
     
@@ -75,6 +140,21 @@
     <img id="idle-cat-7" src="Images/idlecat7.png" alt="Idle Cat 7">
     <img id="idle-cat-8" src="Images/idlecat8.png" alt="Idle Cat 8">
     <img id="idle-cat-9" src="Images/idlecat9.png" alt="Idle Cat 9">
+    <div id="bike-layer">
+        <img id="cat-bike-rain" class="bike-cat bike-cat-rain" src="Images/cat_bike_rain.png" alt="Scooter cat in the rain">
+        <img id="cat-bike" class="bike-cat bike-cat-sun" src="Images/cat_bike.png" alt="Scooter cat for sunny days">
+        <img id="bike-attachment-flower" class="bike-attachment bike-attachment-flower" src="Images/Flowergift.png" alt="">
+        <img id="bike-attachment-letter" class="bike-attachment bike-attachment-letter" src="Images/lettertable.png" alt="">
+        <img id="bike-bubble-rain" class="bike-bubble" src="Images/minhanhbubble.png" alt="Rain cat thought bubble">
+        <img id="bike-bubble-sun" class="bike-bubble" src="Images/minhanhbubble.png" alt="Sun cat thought bubble">
+    </div>
+    <div id="final-letter-overlay" class="final-letter-overlay" aria-hidden="true">
+        <div class="final-letter-content">
+            <img id="final-letter-image" src="Images/flowerletter.png" alt="Gift letter">
+            <p class="final-letter-message">I like you ; )</p>
+        </div>
+    </div>
+    <div id="rain-overlay"></div>
 
     <!-- 🍂 Large Falling Autumn Leaf -->
     <img id="falling-leaf" src="Images/autumn-leaf.png" alt="Falling Leaf">
