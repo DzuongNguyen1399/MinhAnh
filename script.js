@@ -507,7 +507,16 @@ if (elements.rainBikeCat) {
 if (elements.sunnyBikeCat) {
     elements.sunnyBikeCat.addEventListener("animationend", handleBikeAnimationEnd);
     elements.sunnyBikeCat.addEventListener("click", () => toggleBikeBubble("sun"));
+    elements.sunnyBikeCat.addEventListener("animationstart", () => {
+    if (finalSceneItemsUnlocked) {
+      showSunBikeAttachments({ immediate: true });
+      setTimeout(() => updateSunBikeAttachments({ immediate: true }), 50);
+      setTimeout(() => updateSunBikeAttachments({ immediate: true }), 350);
+      setTimeout(() => updateSunBikeAttachments({ immediate: true }), 900);
+    }
+  });
 }
+
 
 if (elements.sunBikeAttachmentLetter) {
     elements.sunBikeAttachmentLetter.addEventListener("click", handleSunBikeLetterClick);
@@ -3542,3 +3551,356 @@ function setIdleCatsEnabled(enabled) {
 
 // Start the idle timer when the page loads
 resetIdleTimer();
+
+
+/* ==========================================================
+   FINAL SCENE: Black hold + glass shatter → reveal sun scene
+   (Drop this at the VERY END of your JS file)
+   ========================================================== */
+
+/* --- Tunables (adjust timing/feel) --- */
+window.SHATTER_CUE_MS       = 12450; // ms from Lemon Tree start to glass SFX
+window.SHATTER_ANIM_MS      = 600;   // shard flight duration
+window.SHATTER_GRID_COLS    = 12;    // shard density (cols)
+window.SHATTER_GRID_ROWS    = 7;     // shard density (rows)
+window.SHATTER_SPREAD_PX    = 480;   // how far shards fly
+window.SHATTER_ROT_MAX_DEG  = 65;    // max shard rotation
+window.SHATTER_STAGGER_MS   = 280;   // random per-shard delay
+window.SHATTER_DEBUG        = false; // outlines on shards (true while testing)
+
+/* Keep the lexical `let finalSceneItemsUnlocked` and the global in sync */
+(function(){
+  window.setFinalUnlocked = function setFinalUnlocked(v = true) {
+    try { finalSceneItemsUnlocked = v; } catch(e) {}
+    try { window.finalSceneItemsUnlocked = v; } catch(e) {}
+  };
+})();
+
+/* Small helper: guarantee sunny cat is riding AND attachments are on */
+(function () {
+  window.ensureSunnyCatAttachments = function ensureSunnyCatAttachments(opts = {}) {
+    try {
+      const el = window.elements || {};
+      const cat = el.sunnyBikeCat || document.getElementById("cat-bike");
+      if (!cat) return;
+
+      // make sure the flag is truly ON for attachment code paths
+      window.setFinalUnlocked(true);
+
+      const dir =
+        opts.direction ||
+        cat.dataset.nextDirection ||
+        cat.dataset.direction ||
+        "right";
+      const delay = typeof opts.delay === "number" ? opts.delay : 0;
+
+      // Ensure sun scene + start ride NOW
+      if (typeof window.setVisualMode === "function") {
+        window.setVisualMode("sun", { sunDirection: dir, sunDelay: delay });
+      }
+      if (!cat.classList.contains("show")) {
+        if (typeof window.startBikeRide === "function") {
+          window.startBikeRide(cat, dir, delay);
+        }
+      }
+
+      // Make the overlays definitely visible and interactive
+      const f = el.sunBikeAttachmentFlower;
+      const l = el.sunBikeAttachmentLetter;
+      [f, l].forEach((node) => {
+        if (!node) return;
+        node.style.display = "block";
+        node.style.pointerEvents = "auto";
+      });
+
+      // Force-followers on + multiple nudges to survive layout/anim timing
+      if (typeof window.showSunBikeAttachments === "function") {
+        window.showSunBikeAttachments({ immediate: true });
+      }
+      if (typeof window.updateSunBikeAttachments === "function") {
+        window.updateSunBikeAttachments({ immediate: true });
+        setTimeout(() => window.updateSunBikeAttachments({ immediate: true }), 50);
+        setTimeout(() => window.updateSunBikeAttachments({ immediate: true }), 350);
+        setTimeout(() => window.updateSunBikeAttachments({ immediate: true }), 900);
+      }
+
+      // Hard fallback: start followers directly if available
+      if (Array.isArray(window.sunBikeAttachmentStates)) {
+        window.sunBikeAttachmentStates.forEach((s) => {
+          try {
+            if (typeof startBikeAttachmentFollower === "function") {
+              startBikeAttachmentFollower(s);
+              updateBikeAttachmentPosition && updateBikeAttachmentPosition(s);
+            }
+          } catch {}
+        });
+      }
+    } catch (e) {
+      console.warn("ensureSunnyCatAttachments issue", e);
+    }
+  };
+})();
+
+/* Build overlay once */
+(function(){
+  window.ensureBlackInterstitial = function ensureBlackInterstitial() {
+    let host = document.getElementById("black-interstitial");
+    if (host) return host;
+
+    host = document.createElement("div");
+    host.id = "black-interstitial";
+    host.setAttribute("aria-hidden", "true");
+    host.style.setProperty("--cols", window.SHATTER_GRID_COLS);
+    host.style.setProperty("--rows", window.SHATTER_GRID_ROWS);
+
+    const grid = document.createElement("div");
+    grid.className = "grid";
+    host.appendChild(grid);
+
+    const total = window.SHATTER_GRID_COLS * window.SHATTER_GRID_ROWS;
+    for (let i = 0; i < total; i++) {
+      const shard = document.createElement("span");
+      shard.className = "shard";
+      grid.appendChild(shard);
+    }
+
+    if (window.SHATTER_DEBUG) host.classList.add("debug");
+    document.body.appendChild(host);
+    return host;
+  };
+
+  /* Prepare overlay for a new run (black “hold”) */
+  window.armBlackInterstitial = function armBlackInterstitial() {
+    const host = window.ensureBlackInterstitial();
+    host.classList.remove("active", "shattering");
+    host.style.display = "block";
+    host.style.background = "#000"; // solid black during intro
+    const shards = host.querySelectorAll(".shard");
+    shards.forEach((s) => {
+      s.style.opacity = "1";
+      s.style.transform = "none";
+      s.style.animation = "none";
+      s.style.removeProperty("--dx");
+      s.style.removeProperty("--dy");
+      s.style.removeProperty("--rot");
+      s.style.removeProperty("--dur");
+      s.style.removeProperty("--delay");
+    });
+    // Next frame: make it visible
+    requestAnimationFrame(() => host.classList.add("active"));
+    return host;
+  };
+
+  /* Robust shatter: CSS animation + fallback (Web Animations API) */
+  window.startShatter = function startShatter(host) {
+    if (!host) return Promise.resolve();
+
+    // Reveal the world behind shards
+    host.style.background = "transparent";
+    const grid = host.querySelector(".grid");
+    if (grid) grid.style.background = "transparent";
+
+    const shards = Array.from(host.querySelectorAll(".shard"));
+    const rect = host.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+
+    let maxDelay = 0;
+
+    // Compute per-shard vectors and set CSS vars
+    shards.forEach((s) => {
+      const r = s.getBoundingClientRect();
+      const sx = r.left + r.width / 2;
+      const sy = r.top + r.height / 2;
+      const vx = sx - cx;
+      const vy = sy - cy;
+      const len = Math.hypot(vx, vy) || 1;
+      const nx = vx / len;
+      const ny = vy / len;
+
+      const spread = (window.SHATTER_SPREAD_PX) * (0.6 + Math.random() * 0.8);
+      const dx = nx * spread;
+      const dy = ny * spread;
+      const rot = ((Math.random() * 2 - 1) * (window.SHATTER_ROT_MAX_DEG)).toFixed(1) + "deg";
+      const delay = Math.random() * (window.SHATTER_STAGGER_MS);
+      maxDelay = Math.max(maxDelay, delay);
+
+      s.style.setProperty("--dx", `${dx.toFixed(2)}px`);
+      s.style.setProperty("--dy", `${dy.toFixed(2)}px`);
+      s.style.setProperty("--rot", rot);
+      s.style.setProperty("--dur", `${window.SHATTER_ANIM_MS}`);
+      s.style.setProperty("--delay", `${delay}ms`);
+    });
+
+    // Turn on CSS animation for all shards
+    host.classList.add("shattering");
+
+    // Verify CSS anim actually active; if not, use Web Animations fallback
+    let cssAnimActive = true;
+    const probe = shards[0];
+    if (probe) {
+      void probe.offsetWidth; // reflow
+      const name = getComputedStyle(probe).animationName;
+      cssAnimActive = !!name && name !== "none";
+    }
+
+    if (!cssAnimActive) {
+      shards.forEach((s) => {
+        const dx = parseFloat(s.style.getPropertyValue("--dx")) || 0;
+        const dy = parseFloat(s.style.getPropertyValue("--dy")) || 0;
+        const rot = s.style.getPropertyValue("--rot") || "0deg";
+        const delay = parseFloat(s.style.getPropertyValue("--delay")) || 0;
+        s.animate(
+          [
+            { opacity: 1, transform: "translate(0px, 0px) rotate(0deg) scale(1)" },
+            { opacity: 0, transform: `translate(${dx}px, ${dy}px) rotate(${rot}) scale(0.82)` }
+          ],
+          { duration: window.SHATTER_ANIM_MS, delay, easing: "ease-in", fill: "forwards" }
+        );
+      });
+    }
+
+    const total = window.SHATTER_ANIM_MS + maxDelay + 40;
+    return new Promise((res) => setTimeout(res, total));
+  };
+
+  /* Final lock: hide quiz forever once we hit the final scene */
+  window.enterFinalLock = function enterFinalLock() {
+    try {
+      window.setFinalUnlocked(true);
+
+      // Stop any queued UI timeouts that could re-show the quiz
+      [
+        "quizScrollUnfurlTimeout",
+        "quizContainerHideTimeout",
+        "quizContentHideTimeout",
+        "answerFeedbackPromise"
+      ].forEach(k => {
+        if (window[k] && typeof window[k] !== "function") {
+          try { clearTimeout(window[k]); } catch {}
+          window[k] = null;
+        }
+      });
+
+      // Built-in final scene hider (your function)
+      if (typeof window.applyFinalSceneUI === "function") {
+        window.applyFinalSceneUI();
+      }
+
+      // Extra belt & suspenders
+      const el = window.elements || {};
+      if (window.quizContainer)    { quizContainer.style.display = "none"; }
+      if (window.quizCollapseBody) { quizCollapseBody.style.display = "none"; }
+
+      if (el.quizSelection)      el.quizSelection.style.display = "none";
+      if (el.quizContent)        { el.quizContent.style.display = "none"; el.quizContent.style.visibility="hidden"; el.quizContent.style.opacity="0"; }
+      if (el.progressContainer)  el.progressContainer.style.display = "none";
+      if (el.coinCounter)        el.coinCounter.style.display = "none";
+      if (el.rewardButton)       el.rewardButton.style.display = "none";
+      if (el.backToShop)         { el.backToShop.style.display = "none"; el.backToShop.disabled = true; }
+      if (el.options && el.options.forEach) {
+        el.options.forEach(btn => {
+          if (!btn) return;
+          btn.style.display = "none";
+          btn.disabled = true;
+          btn.onclick = null;
+          btn.style.pointerEvents = "none";
+        });
+      }
+
+      // Kill quiz writers
+      window.showQuestion      = function(){};
+      window.advanceQuizFlow   = function(){};
+      window.updateProgress    = function(){};
+
+      // Clear contents (optional)
+      if (el.question) el.question.innerHTML = "";
+      if (el.quizContent) el.quizContent.innerHTML = "";
+
+      // Remove UI classes
+      document.body.classList.remove("coin-counter-enabled","back-to-shop-enabled","coin-counter-shop-visible");
+      if (typeof window.setToggleBarEnabled === "function") window.setToggleBarEnabled(false);
+      if (typeof window.setQuizCollapsedState === "function") window.setQuizCollapsedState(true);
+
+      // Keep attachments alive
+      if (typeof window.updateSunBikeAttachments === "function") {
+        window.updateSunBikeAttachments({ immediate: true });
+      }
+
+      // CSS hammer to ensure nothing quiz-y shows
+      document.body.classList.add("final-mode");
+    } catch (e) {
+      console.warn("enterFinalLock issue", e);
+    }
+  };
+
+  /* Override: shop → black hold → (glass) shatter → sun scene (final) */
+  (function overrideTriggerFinalSceneTransition() {
+    const origApplyFinalSceneUI = window.applyFinalSceneUI;
+    const origUpdateShopItems   = window.updateWomensDayShopItems;
+
+    window.triggerFinalSceneTransition = function triggerFinalSceneTransitionPatched() {
+      // Mark end-game + hide quiz immediately
+      window.setFinalUnlocked(true);
+      origApplyFinalSceneUI && origApplyFinalSceneUI();
+
+      // Music swap
+      window.playLemonTreeTheme && window.playLemonTreeTheme({ restart: true });
+      window.stopShopMusic && window.stopShopMusic({ fade: true });
+      window.hideShopItemViewer && window.hideShopItemViewer(true);
+      origUpdateShopItems && origUpdateShopItems();
+
+      // Fade out shop quickly
+      const intro = document.getElementById("womens-day-intro");
+      if (intro) {
+        intro.style.transition = "opacity 600ms ease";
+        intro.style.opacity = "0";
+        setTimeout(() => {
+          intro.classList.remove("visible");
+          intro.setAttribute("aria-hidden", "true");
+          document.body.classList.remove("shop-mode");
+        }, 620);
+      }
+
+      // Bring world back behind the black hold (still keep quiz off)
+      if (typeof window.resumeSceneAfterShop === "function") {
+        window.resumeSceneAfterShop();
+      }
+      window.enterFinalLock(); // keep everything off during the black hold
+
+      // Black hold
+      const host = window.armBlackInterstitial ? window.armBlackInterstitial() : null;
+
+      // Sync to audio cue
+      const audio = (window.elements && window.elements.lemonTreeAudio) || document.getElementById("lemon-tree-audio");
+      let delayToCue = window.SHATTER_CUE_MS || 3500;
+      try {
+        if (audio && isFinite(audio.currentTime)) {
+          delayToCue = Math.max(0, delayToCue - audio.currentTime * 1000);
+        }
+      } catch {}
+
+      // At cue → ensure sun scene + start ride + shatter → then hard-lock final UI again
+      setTimeout(async () => {
+        // Make 100% sure the sunny cat is on screen and attachments are latched
+        window.ensureSunnyCatAttachments({ delay: 0 });
+
+        // Start shatter and wait for it
+        if (window.startShatter && host) {
+          await window.startShatter(host);
+          host.classList.remove("active","shattering");
+          host.style.display = "none";
+        }
+
+        // Nudge attachments again post-shatter (in case z-index/layout changed)
+        window.ensureSunnyCatAttachments({ delay: 0 });
+
+        // Absolutely ensure nothing quiz-y comes back
+        window.enterFinalLock();
+      }, delayToCue);
+    };
+  })();
+})();
+
+
+

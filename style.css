@@ -1967,3 +1967,61 @@ h1 {
     line-height: 1.0; /* Improved readability */
     z-index: 250;
 }
+
+
+
+/* Final scene: nuke every quiz bit no matter what JS tries */
+.final-mode #quiz-content,
+.final-mode #quiz-selection,
+.final-mode #progress-container,
+.final-mode .quiz-container,
+.final-mode #quiz-collapse-body,
+.final-mode #question,
+.final-mode #option1,
+.final-mode #option2,
+.final-mode #option3,
+.final-mode #option4,
+.final-mode #quiz-toggle-bar {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Shatter overlay styles */
+#black-interstitial {
+  position: fixed;
+  inset: 0;
+  background: #000;              /* stays black during the hold */
+  display: none;
+  z-index: 2147483647;           /* above everything */
+  pointer-events: none;
+}
+#black-interstitial.active { display: block; }
+
+#black-interstitial .grid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 12), 1fr);
+  grid-template-rows: repeat(var(--rows, 7), 1fr);
+  gap: 0;
+}
+#black-interstitial .shard {
+  display: block;
+  background: #000;
+  will-change: transform, opacity;
+}
+#black-interstitial.debug .shard {
+  outline: 1px solid rgba(255,255,255,0.08);
+}
+@keyframes shardShatter {
+  to {
+    opacity: 0;
+    transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(0.82);
+  }
+}
+/* Respect reduced motion users */
+@media (prefers-reduced-motion: reduce) {
+  #black-interstitial .shard { transition: none !important; animation: none !important; }
+}
