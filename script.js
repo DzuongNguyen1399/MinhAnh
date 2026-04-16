@@ -286,6 +286,8 @@ const elements = {
     coinCount: document.getElementById("coin-count"),
     toeicTitle: document.getElementById("toeic-title"),
     bigCatContainer: document.getElementById("big-cat-container"),
+    frontMailbox: document.getElementById("front-mailbox"),
+    readingCatScene: document.getElementById("reading-cat-scene"),
     rainAudio: document.getElementById("rain-audio"),
     sunAudio: document.getElementById("sun-audio"),
     lemonTreeAudio: document.getElementById("lemon-tree-audio"),
@@ -579,6 +581,10 @@ if (elements.backToShop) {
     elements.backToShop.addEventListener("click", handleBackToShopClick);
 }
 
+if (elements.frontMailbox) {
+    elements.frontMailbox.addEventListener("click", handleFrontMailboxClick);
+}
+
 setToggleBarEnabled(false);
 setQuizCollapsedState(false);
 updateWomensDayShopItems();
@@ -660,6 +666,9 @@ function initializeQuiz(questionSet, { is2010 = false } = {}) {
     document.body.classList.toggle("coin-counter-enabled", is2010);
     if (elements.backToShop) {
         elements.backToShop.style.display = "";
+    }
+    if (elements.frontMailbox) {
+        elements.frontMailbox.style.display = "none";
     }
     document.body.classList.toggle("back-to-shop-enabled", is2010);
 
@@ -1280,6 +1289,56 @@ function handleBackToShopClick(event) {
     resumeSceneStateAfterShop = captureSceneStateForShop();
     womensDayIntroStartCallback = resumeSceneAfterShop;
     showWomensDayIntro();
+}
+
+function handleFrontMailboxClick(event) {
+    if (event) {
+        event.preventDefault();
+    }
+
+    setVisualMode(null);
+    stopShopMusic({ reset: true, fade: false });
+    [elements.lemonTreeAudio, document.getElementById("ambient-music"), document.getElementById("love-song")].forEach((audio) => {
+        if (!audio) {
+            return;
+        }
+        if (audio._fadeTimeout) {
+            clearTimeout(audio._fadeTimeout);
+            audio._fadeTimeout = null;
+        }
+        try {
+            audio.pause();
+            audio.currentTime = 0;
+        } catch (err) {
+            // Ignore media reset failures.
+        }
+    });
+
+    if (womensDayIntroTimeout) {
+        clearTimeout(womensDayIntroTimeout);
+        womensDayIntroTimeout = null;
+    }
+    if (shopItemFeedbackTimeout) {
+        clearTimeout(shopItemFeedbackTimeout);
+        shopItemFeedbackTimeout = null;
+    }
+    if (quizContainerHideTimeout) {
+        clearTimeout(quizContainerHideTimeout);
+        quizContainerHideTimeout = null;
+    }
+    if (quizContentHideTimeout) {
+        clearTimeout(quizContentHideTimeout);
+        quizContentHideTimeout = null;
+    }
+    if (quizScrollUnfurlTimeout) {
+        clearTimeout(quizScrollUnfurlTimeout);
+        quizScrollUnfurlTimeout = null;
+    }
+
+    document.body.className = "reading-mode";
+    if (elements.readingCatScene) {
+        elements.readingCatScene.setAttribute("aria-hidden", "false");
+    }
 }
 
 function captureSceneStateForShop() {
@@ -3901,6 +3960,3 @@ window.SHATTER_DEBUG        = false; // outlines on shards (true while testing)
     };
   })();
 })();
-
-
-
