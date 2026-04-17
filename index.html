@@ -41,6 +41,10 @@
         <source src="Audio/shopmusic.mp3" type="audio/mpeg">
     </audio>
 
+    <audio id="nuan-nuan-audio" loop>
+        <source src="Audio/NuanNuan.mp3" type="audio/mpeg">
+    </audio>
+
     <!-- Progress Meter UI -->
     <div id="progress-container">
         <div id="progress-bar"></div>
@@ -128,6 +132,11 @@
 
     <main id="reading-cat-scene" class="reading-cat-scene" aria-hidden="true">
         <img id="reading-cat-image" class="reading-cat-image" src="Images/Minh_Cat_reading.png" alt="Minh Anh reading cat">
+        <div class="reading-music-cluster">
+            <img id="reading-music-player" class="reading-music-player" src="Images/musicplayer.png" alt="">
+            <img id="reading-music-note" class="reading-music-note" src="Images/musicnote.png" alt="">
+            <button id="reading-music-toggle" class="reading-music-toggle-hitbox" type="button" aria-label="Turn off Nuan Nuan music" aria-pressed="true"></button>
+        </div>
     </main>
 
 

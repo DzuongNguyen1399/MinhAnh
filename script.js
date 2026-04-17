@@ -288,9 +288,12 @@ const elements = {
     bigCatContainer: document.getElementById("big-cat-container"),
     frontMailbox: document.getElementById("front-mailbox"),
     readingCatScene: document.getElementById("reading-cat-scene"),
+    readingMusicToggle: document.getElementById("reading-music-toggle"),
+    readingMusicNote: document.getElementById("reading-music-note"),
     rainAudio: document.getElementById("rain-audio"),
     sunAudio: document.getElementById("sun-audio"),
     lemonTreeAudio: document.getElementById("lemon-tree-audio"),
+    nuanNuanAudio: document.getElementById("nuan-nuan-audio"),
     rainOverlay: document.getElementById("rain-overlay"),
     womensDayIntro: document.getElementById("womens-day-intro"),
     womensDayCatseller: document.getElementById("womens-day-catseller"),
@@ -583,6 +586,10 @@ if (elements.backToShop) {
 
 if (elements.frontMailbox) {
     elements.frontMailbox.addEventListener("click", handleFrontMailboxClick);
+}
+
+if (elements.readingMusicToggle) {
+    elements.readingMusicToggle.addEventListener("click", handleReadingMusicToggleClick);
 }
 
 setToggleBarEnabled(false);
@@ -1338,6 +1345,81 @@ function handleFrontMailboxClick(event) {
     document.body.className = "reading-mode";
     if (elements.readingCatScene) {
         elements.readingCatScene.setAttribute("aria-hidden", "false");
+    }
+    updateNuanNuanToggleState(true);
+    playNuanNuanAudio();
+}
+
+function handleReadingMusicToggleClick(event) {
+    if (event) {
+        event.preventDefault();
+    }
+    const audio = elements.nuanNuanAudio;
+    if (!audio) {
+        return;
+    }
+    if (audio.paused || audio.ended) {
+        updateNuanNuanToggleState(true);
+        playNuanNuanAudio();
+        return;
+    }
+    stopNuanNuanAudio();
+}
+
+function playNuanNuanAudio() {
+    const audio = elements.nuanNuanAudio;
+    if (!audio) {
+        return;
+    }
+    if (audio._fadeTimeout) {
+        clearTimeout(audio._fadeTimeout);
+        audio._fadeTimeout = null;
+    }
+    audio.loop = true;
+    audio.dataset.baseVolume = "0.75";
+    audio.volume = ensureBaseVolume(audio, 0.75);
+    try {
+        audio.currentTime = 0;
+    } catch (err) {
+        // Ignore media reset failures.
+    }
+    const playPromise = audio.play();
+    if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch((error) => {
+            updateNuanNuanToggleState(false);
+            console.warn("Unable to start NuanNuan audio:", error);
+        });
+    }
+}
+
+function stopNuanNuanAudio() {
+    const audio = elements.nuanNuanAudio;
+    if (!audio) {
+        return;
+    }
+    if (audio._fadeTimeout) {
+        clearTimeout(audio._fadeTimeout);
+        audio._fadeTimeout = null;
+    }
+    try {
+        audio.pause();
+    } catch (err) {
+        // Ignore media pause failures.
+    }
+    updateNuanNuanToggleState(false);
+}
+
+function updateNuanNuanToggleState(isPlaying) {
+    if (!elements.readingMusicToggle) {
+        return;
+    }
+    elements.readingMusicToggle.setAttribute("aria-pressed", isPlaying ? "true" : "false");
+    elements.readingMusicToggle.setAttribute(
+        "aria-label",
+        isPlaying ? "Turn off Nuan Nuan music" : "Turn on Nuan Nuan music"
+    );
+    if (elements.readingMusicNote) {
+        elements.readingMusicNote.classList.toggle("is-hidden", !isPlaying);
     }
 }
 
