@@ -1303,6 +1303,8 @@ function handleFrontMailboxClick(event) {
         event.preventDefault();
     }
 
+    updateNuanNuanToggleState(true);
+    playNuanNuanAudio();
     setVisualMode(null);
     stopShopMusic({ reset: true, fade: false });
     [elements.lemonTreeAudio, document.getElementById("ambient-music"), document.getElementById("love-song")].forEach((audio) => {
@@ -1346,8 +1348,6 @@ function handleFrontMailboxClick(event) {
     if (elements.readingCatScene) {
         elements.readingCatScene.setAttribute("aria-hidden", "false");
     }
-    updateNuanNuanToggleState(true);
-    playNuanNuanAudio();
 }
 
 function handleReadingMusicToggleClick(event) {
@@ -1379,6 +1379,7 @@ function playNuanNuanAudio() {
     audio.dataset.baseVolume = "0.75";
     audio.volume = ensureBaseVolume(audio, 0.75);
     try {
+        audio.load();
         audio.currentTime = 0;
     } catch (err) {
         // Ignore media reset failures.
