@@ -263,6 +263,93 @@ function delay(ms) {
 
 let audioContextInstance = null;
 const audioGainNodes = new Map();
+const NUAN_NUAN_DURATION_SECONDS = 185.756735;
+const NUAN_NUAN_LYRIC_START_SECONDS = 11.12;
+const NUAN_NUAN_AVERAGE_LYRICS_START_SECONDS = 20;
+const NUAN_NUAN_LAST_LYRIC_SECONDS = 183;
+const NUAN_NUAN_LYRICS = [
+    { text: "都可以随便的 dou ke yi sui bian de", time: 11.19, endTime: 12.6 },
+    { text: "你说的 ni shuo de", time: 12.85, endTime: 13.9 },
+    { text: "我都愿意去 wo dou yuan yi qu", time: 14.2, endTime: 15.8 },
+    { text: "小火车 xiao huo che", time: 15.9, endTime: 17.2 },
+    { text: "摆动的旋律 bai dong de xuan lu", time: 17.46, endTime: 19.8 },
+    { text: "都可以是真的 dou ke yi shi zhen de", time: 20 },
+    { text: "你说的 ni shuo de", time: 22.02 },
+    { text: "我都会相信 wo dou hui xiang xin", time: 23.43 },
+    { text: "因为我 yin wei wo", time: 25.25 },
+    { text: "完全信任你 wan quan xin ren ni", time: 26.59 },
+    { text: "细腻的喜欢 xi ni de xi huan", time: 29.71 },
+    { text: "毛毯般的 mao tan ban de", time: 31.97 },
+    { text: "厚重感 hou zhong gan", time: 32.91 },
+    { text: "晒过太阳 shai guo tai yang", time: 34.31 },
+    { text: "熟悉的安全感 shou xi de an quan gan", time: 36.01 },
+    { text: "分享热汤 fen xiang re tang", time: 38.91 },
+    { text: "我们两支汤 wo men liang zhi tang", time: 40.74 },
+    { text: "匙一个碗 chi yi ge wan", time: 42.31 },
+    { text: "左心房 zuo xin fang", time: 43.73 },
+    { text: "暖暖的好饱满 nuan nuan de hao bao man", time: 45.09 },
+    { text: "我想说 wo xiang shuo", time: 47.91 },
+    { text: "其实你很好 qi shi ni hen hao", time: 48.87 },
+    { text: "你自己却不知道 ni zi ji que bu zhi dao", time: 50.29 },
+    { text: "真心的对我好 zhen xin de dui wo hao", time: 53.31 },
+    { text: "不要求回报 bu yao qiu hui bao", time: 55.63 },
+    { text: "爱一个人 ai yi ge ren", time: 58.05 },
+    { text: "希望他过更好 xi wang ta guo geng hao", time: 59.86 },
+    { text: "打从心里 暖暖的 da cong xin li nuan nuan de", time: 62.58 },
+    { text: "你比自己更重要 ni bi zi ji geng zhong yao", time: 65.01 },
+    { text: "～～～", time: 68.42 },
+    { text: "～～～", time: 76.49 },
+    { text: "都可以随便的 dou ke yi sui bian de", time: 80.15 },
+    { text: "你说的 ni shuo de", time: 82.34 },
+    { text: "我都愿意去 wo dou yuan yi qu", time: 83.51 },
+    { text: "回忆里 hui yi li", time: 85.21 },
+    { text: "满足的旋律 man zu de xuan lu", time: 86.62 },
+    { text: "都可以是真的 dou ke yi shi zhen de", time: 89.64 },
+    { text: "你说的 ni shuo de", time: 91.52 },
+    { text: "我都会相信 wo dou hui xiang xin", time: 92.68 },
+    { text: "因为我 yin wei wo", time: 94.39 },
+    { text: "完全信任你 wan quan xin ren ni", time: 95.97 },
+    { text: "细腻的喜欢 xi ni de xi huan", time: 99.03 },
+    { text: "你手掌的 ni shou zhang de", time: 101.35 },
+    { text: "厚实感 hou shi gan", time: 102.06 },
+    { text: "什么困难都 shen me kun nan dou", time: 103.8 },
+    { text: "觉的有希望 jue de you xi wang", time: 105.1 },
+    { text: "我哼着歌 wo heng zhe ge", time: 108.31 },
+    { text: "你自然的就 ni zi ran de jiu", time: 109.95 },
+    { text: "接下一段 jie xia yi duan", time: 111.45 },
+    { text: "我知道暖暖 wo zhi dao nuan nuan", time: 113.07 },
+    { text: "就在胸膛 jiu zai xiong tang", time: 115.01 },
+    { text: "我想说 wo xiang shuo", time: 117.15 },
+    { text: "其实你很好 qi shi ni hen hao", time: 118.02 },
+    { text: "你自己却不知道 ni zi ji que bu zhi dao", time: 119.94 },
+    { text: "真心的对我好 zhen xin de dui wo hao", time: 122.61 },
+    { text: "不要求回报 bu yao qiu hui bao", time: 124.97 },
+    { text: "爱一个人 ai yi ge ren", time: 127.29 },
+    { text: "希望他过更好 xi wang ta guo geng hao", time: 129.01 },
+    { text: "打从心里 暖暖的 da cong xin li nuan nuan de", time: 131.9 },
+    { text: "你比自己更重要 ni bi zi ji geng zhong yao", time: 134.24 },
+    { text: "我想说 wo xiang shuo", time: 138.06 },
+    { text: "其实你很好 qi shi ni hen hao", time: 138.91 },
+    { text: "你自己却不知道 ni zi ji que bu zhi dao", time: 140.63 },
+    { text: "从来都很低调 cong lai dou hen di diao", time: 143.41 },
+    { text: "自信心不高 zi xin xin bu gao", time: 145.83 },
+    { text: "爱一个人 ai yi ge ren", time: 148.14 },
+    { text: "希望他过更好 xi wang ta guo geng hao", time: 149.66 },
+    { text: "打从心里 暖暖的 da cong xin li nuan nuan de", time: 152.78 },
+    { text: "你比自己更重要 ni bi zi ji geng zhong yao", time: 155.04 },
+    { text: "想说其实你很好 xiang shuo qi shi ni hen hao", time: 156.81 },
+    { text: "你自己却不知道 ni zi ji que bu zhi dao", time: 159.03 },
+    { text: "真心的对我好 zhen xin de dui wo hao", time: 162.01 },
+    { text: "不要求回报 bu yao qiu hui bao", time: 164.23 },
+    { text: "爱一个人 ai yi ge ren", time: 166.48 },
+    { text: "希望他过更好 xi wang ta guo geng hao", time: 168.3 },
+    { text: "打从心里 暖暖的 da cong xin li nuan nuan de", time: 171.22 },
+    { text: "你比自己更重要 ni bi zi ji geng zhong yao", time: 173.47 },
+    { text: "我也希望变更好 wo ye xi wang bian geng hao.", time: 178.01 }
+];
+let nuanNuanTimedLyrics = [];
+let activeNuanNuanLyricIndex = -1;
+let nuanNuanLyricsVisibilityEnabled = false;
 
 const elements = {
     quizSelection: document.getElementById("quiz-selection"),
@@ -290,6 +377,8 @@ const elements = {
     readingCatScene: document.getElementById("reading-cat-scene"),
     readingMusicToggle: document.getElementById("reading-music-toggle"),
     readingMusicNote: document.getElementById("reading-music-note"),
+    readingLyricsPanel: document.getElementById("reading-lyrics-panel"),
+    readingLyricsList: document.getElementById("reading-lyrics-list"),
     rainAudio: document.getElementById("rain-audio"),
     sunAudio: document.getElementById("sun-audio"),
     lemonTreeAudio: document.getElementById("lemon-tree-audio"),
@@ -590,6 +679,28 @@ if (elements.frontMailbox) {
 
 if (elements.readingMusicToggle) {
     elements.readingMusicToggle.addEventListener("click", handleReadingMusicToggleClick);
+}
+
+if (elements.readingLyricsPanel) {
+    elements.readingLyricsPanel.setAttribute("role", "button");
+    elements.readingLyricsPanel.setAttribute("tabindex", "0");
+    elements.readingLyricsPanel.setAttribute("aria-pressed", "false");
+    elements.readingLyricsPanel.setAttribute("aria-label", "Show Nuan Nuan lyrics");
+    elements.readingLyricsPanel.addEventListener("click", handleReadingLyricsToggleClick);
+    elements.readingLyricsPanel.addEventListener("keydown", handleReadingLyricsToggleKeydown);
+}
+
+renderNuanNuanLyrics();
+if (elements.nuanNuanAudio) {
+    elements.nuanNuanAudio.addEventListener("loadedmetadata", buildNuanNuanLyricTimeline);
+    elements.nuanNuanAudio.addEventListener("timeupdate", handleNuanNuanTimeUpdate);
+    elements.nuanNuanAudio.addEventListener("play", () => {
+        updateNuanNuanToggleState(true);
+    });
+    elements.nuanNuanAudio.addEventListener("pause", () => {
+        updateNuanNuanToggleState(false);
+    });
+    elements.nuanNuanAudio.load();
 }
 
 setToggleBarEnabled(false);
@@ -1366,6 +1477,22 @@ function handleReadingMusicToggleClick(event) {
     stopNuanNuanAudio();
 }
 
+function handleReadingLyricsToggleClick(event) {
+    if (event) {
+        event.preventDefault();
+    }
+    nuanNuanLyricsVisibilityEnabled = !nuanNuanLyricsVisibilityEnabled;
+    updateNuanNuanLyricsVisibility();
+}
+
+function handleReadingLyricsToggleKeydown(event) {
+    if (!event || (event.key !== "Enter" && event.key !== " ")) {
+        return;
+    }
+    event.preventDefault();
+    handleReadingLyricsToggleClick(event);
+}
+
 function playNuanNuanAudio() {
     const audio = elements.nuanNuanAudio;
     if (!audio) {
@@ -1379,11 +1506,11 @@ function playNuanNuanAudio() {
     audio.dataset.baseVolume = "0.75";
     audio.volume = ensureBaseVolume(audio, 0.75);
     try {
-        audio.load();
         audio.currentTime = 0;
     } catch (err) {
         // Ignore media reset failures.
     }
+    updateNuanNuanLyrics();
     const playPromise = audio.play();
     if (playPromise && typeof playPromise.catch === "function") {
         playPromise.catch((error) => {
@@ -1422,6 +1549,150 @@ function updateNuanNuanToggleState(isPlaying) {
     if (elements.readingMusicNote) {
         elements.readingMusicNote.classList.toggle("is-hidden", !isPlaying);
     }
+    updateNuanNuanLyricsVisibility();
+}
+
+function updateNuanNuanLyricsVisibility() {
+    if (!elements.readingLyricsPanel) {
+        return;
+    }
+    const audio = elements.nuanNuanAudio;
+    const isPlaying = Boolean(audio && !audio.paused && !audio.ended);
+    const isVisible = nuanNuanLyricsVisibilityEnabled && isPlaying;
+    elements.readingLyricsPanel.classList.toggle("is-visible", isVisible);
+    elements.readingLyricsPanel.setAttribute(
+        "aria-pressed",
+        nuanNuanLyricsVisibilityEnabled ? "true" : "false"
+    );
+    elements.readingLyricsPanel.setAttribute(
+        "aria-label",
+        nuanNuanLyricsVisibilityEnabled ? "Hide Nuan Nuan lyrics" : "Show Nuan Nuan lyrics"
+    );
+}
+
+function renderNuanNuanLyrics() {
+    if (!elements.readingLyricsList || elements.readingLyricsList.children.length) {
+        return;
+    }
+    const fragment = document.createDocumentFragment();
+    NUAN_NUAN_LYRICS.forEach((line, index) => {
+        const lyricLine = document.createElement("p");
+        lyricLine.className = "reading-lyric-line";
+        lyricLine.dataset.lyricIndex = String(index);
+        lyricLine.textContent = line.text;
+        fragment.appendChild(lyricLine);
+    });
+    elements.readingLyricsList.appendChild(fragment);
+    buildNuanNuanLyricTimeline();
+    updateNuanNuanToggleState(false);
+}
+
+function buildNuanNuanLyricTimeline() {
+    const audio = elements.nuanNuanAudio;
+    const duration = audio && audio.duration && isFinite(audio.duration)
+        ? audio.duration
+        : NUAN_NUAN_DURATION_SECONDS;
+    const lyricEnd = Math.min(NUAN_NUAN_LAST_LYRIC_SECONDS, duration);
+    const averageLyricStart = NUAN_NUAN_AVERAGE_LYRICS_START_SECONDS;
+    const averageLyricDuration = Math.max(1, lyricEnd - averageLyricStart);
+    const averageLyricWeight = NUAN_NUAN_LYRICS.reduce((sum, line) => {
+        if (typeof line.time === "number") {
+            return sum;
+        }
+        return sum + (line.weight || 1);
+    }, 0);
+    let elapsedAverageWeight = 0;
+    nuanNuanTimedLyrics = NUAN_NUAN_LYRICS.map((line, index) => {
+        if (typeof line.time === "number") {
+            return {
+                index,
+                text: line.text,
+                time: line.time,
+                endTime: line.endTime
+            };
+        }
+        if (averageLyricWeight <= 0) {
+            return {
+                index,
+                text: line.text,
+                time: Math.min(lyricEnd, duration)
+            };
+        }
+        const timedLine = {
+            index,
+            text: line.text,
+            time: averageLyricStart + (elapsedAverageWeight / averageLyricWeight) * averageLyricDuration
+        };
+        elapsedAverageWeight += line.weight || 1;
+        return timedLine;
+    });
+}
+
+function handleNuanNuanTimeUpdate() {
+    updateNuanNuanLyrics();
+}
+
+function updateNuanNuanLyrics() {
+    const audio = elements.nuanNuanAudio;
+    if (!audio || !elements.readingLyricsList) {
+        return;
+    }
+    if (!nuanNuanTimedLyrics.length) {
+        buildNuanNuanLyricTimeline();
+    }
+    const currentTime = audio.currentTime || 0;
+    if (currentTime < NUAN_NUAN_LYRIC_START_SECONDS) {
+        setActiveNuanNuanLyric(-1);
+        return;
+    }
+    let activeIndex = 0;
+    for (let index = nuanNuanTimedLyrics.length - 1; index >= 0; index -= 1) {
+        if (currentTime >= nuanNuanTimedLyrics[index].time) {
+            activeIndex = index;
+            break;
+        }
+    }
+    const activeLine = nuanNuanTimedLyrics[activeIndex];
+    const nextLine = nuanNuanTimedLyrics[activeIndex + 1];
+    if (
+        activeLine &&
+        typeof activeLine.endTime === "number" &&
+        currentTime > activeLine.endTime &&
+        (!nextLine || currentTime < nextLine.time)
+    ) {
+        setActiveNuanNuanLyric(-1);
+        return;
+    }
+    setActiveNuanNuanLyric(activeIndex);
+}
+
+function setActiveNuanNuanLyric(index) {
+    if (index === activeNuanNuanLyricIndex || !elements.readingLyricsList) {
+        return;
+    }
+    const previous = elements.readingLyricsList.querySelector(".reading-lyric-line.is-active");
+    if (previous) {
+        previous.classList.remove("is-active");
+    }
+    if (index < 0) {
+        activeNuanNuanLyricIndex = -1;
+        elements.readingLyricsList.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+        return;
+    }
+    const active = elements.readingLyricsList.querySelector(`[data-lyric-index="${index}"]`);
+    if (!active) {
+        return;
+    }
+    active.classList.add("is-active");
+    activeNuanNuanLyricIndex = index;
+    const targetTop = active.offsetTop - elements.readingLyricsList.clientHeight * 0.42;
+    elements.readingLyricsList.scrollTo({
+        top: Math.max(0, targetTop),
+        behavior: "smooth"
+    });
 }
 
 function captureSceneStateForShop() {
