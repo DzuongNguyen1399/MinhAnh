@@ -1414,8 +1414,7 @@ function handleFrontMailboxClick(event) {
         event.preventDefault();
     }
 
-    updateNuanNuanToggleState(true);
-    playNuanNuanAudio();
+    resetNuanNuanAudio();
     setVisualMode(null);
     stopShopMusic({ reset: true, fade: false });
     [elements.lemonTreeAudio, document.getElementById("ambient-music"), document.getElementById("love-song")].forEach((audio) => {
@@ -1534,6 +1533,26 @@ function stopNuanNuanAudio() {
     } catch (err) {
         // Ignore media pause failures.
     }
+    updateNuanNuanToggleState(false);
+}
+
+function resetNuanNuanAudio() {
+    const audio = elements.nuanNuanAudio;
+    if (!audio) {
+        updateNuanNuanToggleState(false);
+        return;
+    }
+    if (audio._fadeTimeout) {
+        clearTimeout(audio._fadeTimeout);
+        audio._fadeTimeout = null;
+    }
+    try {
+        audio.pause();
+        audio.currentTime = 0;
+    } catch (err) {
+        // Ignore media reset failures.
+    }
+    setActiveNuanNuanLyric(-1);
     updateNuanNuanToggleState(false);
 }
 
