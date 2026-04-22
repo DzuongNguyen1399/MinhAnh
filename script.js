@@ -1522,7 +1522,20 @@ function showReadingCatScene() {
 
     document.body.className = "reading-mode";
     if (elements.readingCatScene) {
+        elements.readingCatScene.classList.remove("reading-sequence-start");
+        elements.readingCatScene.classList.add("is-entering");
         elements.readingCatScene.setAttribute("aria-hidden", "false");
+        void elements.readingCatScene.offsetWidth;
+        setTimeout(() => {
+            if (elements.readingCatScene) {
+                elements.readingCatScene.classList.add("reading-sequence-start");
+            }
+        }, 180);
+        setTimeout(() => {
+            if (elements.readingCatScene) {
+                elements.readingCatScene.classList.remove("is-entering", "reading-sequence-start");
+            }
+        }, 1200);
     }
 }
 
