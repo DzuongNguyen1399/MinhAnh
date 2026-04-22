@@ -1565,8 +1565,11 @@ function handleReadingLyricsToggleClick(event) {
         return;
     }
     nuanNuanLyricsVisibilityEnabled = !nuanNuanLyricsVisibilityEnabled;
+    if (elements.readingLyricsPanel) {
+        elements.readingLyricsPanel.classList.toggle("is-click-reveal", nuanNuanLyricsVisibilityEnabled);
+    }
     if (nuanNuanLyricsVisibilityEnabled) {
-        clearReadingLyricsHint();
+        cancelPendingReadingLyricsHint();
     }
     updateNuanNuanLyricsVisibility();
 }
@@ -1599,6 +1602,13 @@ function clearReadingLyricsHint() {
     }
     if (elements.readingLyricsHint) {
         elements.readingLyricsHint.classList.remove("is-running");
+    }
+}
+
+function cancelPendingReadingLyricsHint() {
+    if (readingLyricsHintTimeout) {
+        clearTimeout(readingLyricsHintTimeout);
+        readingLyricsHintTimeout = null;
     }
 }
 
@@ -1712,6 +1722,9 @@ function updateNuanNuanLyricsVisibility() {
     }
     const isPlaying = isNuanNuanAudioPlaying();
     const isVisible = nuanNuanLyricsVisibilityEnabled && isPlaying;
+    if (!isVisible) {
+        elements.readingLyricsPanel.classList.remove("is-click-reveal");
+    }
     elements.readingLyricsPanel.classList.toggle("is-visible", isVisible);
     elements.readingLyricsPanel.classList.toggle("is-toggleable", isPlaying);
     elements.readingLyricsPanel.setAttribute("aria-disabled", isPlaying ? "false" : "true");

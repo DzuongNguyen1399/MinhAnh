@@ -654,11 +654,12 @@ body.reading-mode .reading-cat-scene {
 }
 
 .reading-lyrics-panel.is-visible .reading-lyrics-list {
+    opacity: 1;
     visibility: visible;
 }
 
 .reading-lyrics-panel.is-visible:has(.reading-lyrics-hint.is-running) .reading-lyrics-list {
-    visibility: hidden;
+    visibility: visible;
 }
 
 .reading-lyrics-panel.is-toggleable {
@@ -670,6 +671,10 @@ body.reading-mode .reading-cat-scene {
     opacity: 1;
 }
 
+.reading-lyrics-panel.is-click-reveal {
+    transition-duration: 3.2s;
+}
+
 .reading-lyrics-panel:focus-visible {
     outline: 3px solid rgba(255, 255, 255, 0.85);
     outline-offset: 6px;
@@ -679,7 +684,9 @@ body.reading-mode .reading-cat-scene {
     max-height: inherit;
     overflow: hidden;
     padding: 4px 12px 4px 0;
+    opacity: 0;
     visibility: hidden;
+    transition: opacity 3.2s ease;
 }
 
 .reading-lyric-line {
