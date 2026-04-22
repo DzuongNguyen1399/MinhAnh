@@ -256,6 +256,9 @@ const BUBBLE_AUTO_VISIBLE_MS = 3000;
 const OPTION_FADE_MS = 300;
 const FINAL_LETTER_SCENE_FADE_MS = 2000;
 const FINAL_LETTER_OVERLAY_DELAY_MS = FINAL_LETTER_SCENE_FADE_MS + 1000;
+const QUIZ_LOADING_DURATION_MS = 3000;
+const QUIZ_LOADING_SCENE_PREPARE_MS = 2400;
+const QUIZ_LOADING_HIDE_BUFFER_MS = 120;
 
 function delay(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -350,6 +353,8 @@ const NUAN_NUAN_LYRICS = [
 let nuanNuanTimedLyrics = [];
 let activeNuanNuanLyricIndex = -1;
 let nuanNuanLyricsVisibilityEnabled = false;
+let quizLoadingActive = false;
+let readingLyricsHintTimeout = null;
 
 const elements = {
     quizSelection: document.getElementById("quiz-selection"),
@@ -375,10 +380,13 @@ const elements = {
     bigCatContainer: document.getElementById("big-cat-container"),
     frontMailbox: document.getElementById("front-mailbox"),
     readingCatScene: document.getElementById("reading-cat-scene"),
+    loadingCatpawScreen: document.getElementById("loading-catpaw-screen"),
+    loadingCatpawImage: document.getElementById("loading-catpaw-image"),
     readingLetterLeft: document.getElementById("reading-letter-left"),
     readingLetterRight: document.getElementById("reading-letter-right"),
     readingMusicToggle: document.getElementById("reading-music-toggle"),
     readingMusicNote: document.getElementById("reading-music-note"),
+    readingLyricsHint: document.getElementById("reading-lyrics-hint"),
     readingLyricsPanel: document.getElementById("reading-lyrics-panel"),
     readingLyricsList: document.getElementById("reading-lyrics-list"),
     rainAudio: document.getElementById("rain-audio"),
@@ -723,11 +731,47 @@ function start2010Test() {
     }
     const startQuiz = () => initializeQuiz(testQuestions, { is2010: true });
     if (!elements.womensDayIntro) {
-        startQuiz();
+        showQuizLoadingScreen(startQuiz);
         return;
     }
     womensDayIntroStartCallback = startQuiz;
-    showWomensDayIntro();
+    showQuizLoadingScreen(showWomensDayIntro);
+}
+
+function showQuizLoadingScreen(callback, { prepareDelay = QUIZ_LOADING_SCENE_PREPARE_MS, background, image } = {}) {
+    if (quizLoadingActive) {
+        return;
+    }
+    const screen = elements.loadingCatpawScreen;
+    if (!screen) {
+        callback();
+        return;
+    }
+    quizLoadingActive = true;
+    if (background) {
+        screen.style.setProperty("--loading-catpaw-bg", background);
+    } else {
+        screen.style.removeProperty("--loading-catpaw-bg");
+    }
+    if (elements.loadingCatpawImage) {
+        elements.loadingCatpawImage.src = image || "Images/Loading_catpaw.png";
+    }
+    screen.classList.remove("is-active", "is-revealing");
+    screen.setAttribute("aria-hidden", "false");
+    void screen.offsetWidth;
+    screen.classList.add("is-active");
+    requestAnimationFrame(() => {
+        screen.classList.add("is-revealing");
+    });
+    const safePrepareDelay = Math.max(0, prepareDelay);
+    setTimeout(() => {
+        callback();
+    }, safePrepareDelay);
+    setTimeout(() => {
+        quizLoadingActive = false;
+        screen.classList.remove("is-active", "is-revealing");
+        screen.setAttribute("aria-hidden", "true");
+    }, Math.max(QUIZ_LOADING_DURATION_MS, safePrepareDelay + QUIZ_LOADING_HIDE_BUFFER_MS));
 }
 
 function initializeQuiz(questionSet, { is2010 = false } = {}) {
@@ -736,6 +780,8 @@ function initializeQuiz(questionSet, { is2010 = false } = {}) {
     }
     is2010Test = is2010;
     resumeSceneStateAfterShop = null;
+    document.body.classList.toggle("womens-day-quiz-mode", !is2010);
+    document.body.classList.remove("birthday-quiz-mode");
 
     if (is2010) {
         setup2010State();
@@ -837,7 +883,7 @@ function initializeQuiz(questionSet, { is2010 = false } = {}) {
     }
     setIdleCatsEnabled(!is2010);
     toggleTitle(!is2010);
-    toggleBigCat(!is2010);
+    toggleBigCat(false);
 
     updateProgress();
     showQuestion();
@@ -1086,6 +1132,8 @@ function showWomensDayIntro() {
         return;
     }
     const intro = elements.womensDayIntro;
+    document.body.classList.remove("womens-day-quiz-mode");
+    document.body.classList.remove("birthday-quiz-mode");
     const startCallback = womensDayIntroStartCallback;
     if (!intro) {
         womensDayIntroStartCallback = null;
@@ -1424,6 +1472,14 @@ function handleFrontMailboxClick(event) {
         event.preventDefault();
     }
 
+    showQuizLoadingScreen(showReadingCatScene, {
+        background: "#8fa992",
+        image: "Images/Loading_yellowletters.png",
+        prepareDelay: QUIZ_LOADING_DURATION_MS
+    });
+}
+
+function showReadingCatScene() {
     resetNuanNuanAudio();
     setVisualMode(null);
     stopShopMusic({ reset: true, fade: false });
@@ -1481,8 +1537,10 @@ function handleReadingMusicToggleClick(event) {
     if (audio.paused || audio.ended) {
         updateNuanNuanToggleState(true);
         playNuanNuanAudio();
+        scheduleReadingLyricsHint();
         return;
     }
+    clearReadingLyricsHint();
     stopNuanNuanAudio();
 }
 
@@ -1494,7 +1552,41 @@ function handleReadingLyricsToggleClick(event) {
         return;
     }
     nuanNuanLyricsVisibilityEnabled = !nuanNuanLyricsVisibilityEnabled;
+    if (nuanNuanLyricsVisibilityEnabled) {
+        clearReadingLyricsHint();
+    }
     updateNuanNuanLyricsVisibility();
+}
+
+function scheduleReadingLyricsHint() {
+    clearReadingLyricsHint();
+    if (!elements.readingLyricsHint) {
+        return;
+    }
+    readingLyricsHintTimeout = setTimeout(() => {
+        readingLyricsHintTimeout = null;
+        if (!elements.readingLyricsHint || !isNuanNuanAudioPlaying() || nuanNuanLyricsVisibilityEnabled) {
+            return;
+        }
+        elements.readingLyricsHint.classList.remove("is-running");
+        void elements.readingLyricsHint.offsetWidth;
+        elements.readingLyricsHint.classList.add("is-running");
+        setTimeout(() => {
+            if (elements.readingLyricsHint) {
+                elements.readingLyricsHint.classList.remove("is-running");
+            }
+        }, 2200);
+    }, 3000);
+}
+
+function clearReadingLyricsHint() {
+    if (readingLyricsHintTimeout) {
+        clearTimeout(readingLyricsHintTimeout);
+        readingLyricsHintTimeout = null;
+    }
+    if (elements.readingLyricsHint) {
+        elements.readingLyricsHint.classList.remove("is-running");
+    }
 }
 
 function handleReadingLyricsToggleKeydown(event) {
@@ -3177,7 +3269,10 @@ function handleBikeAnimationEnd(event) {
 
 // ✅ Start Test Function
 function startTest() {
-    initializeQuiz(shuffleArray(testQuestions));
+    showQuizLoadingScreen(
+        () => initializeQuiz(shuffleArray(testQuestions)),
+        { background: "#fff6c7" }
+    );
 }
 
 
@@ -3239,17 +3334,15 @@ function setup2010State() {
     stopBikeRide(elements.sunnyBikeCat);
 }
 
-// HELP Functions
-function showHelp() {
-    document.getElementById("help-popup").style.display = "flex";
-}
-
-function hideHelp() {
-    document.getElementById("help-popup").style.display = "none";
-}
-
 function birthdayOption() {
-    alert("Can only be accessed on 17/07/2025! 🎂🎉");
+    document.body.classList.add("birthday-quiz-mode");
+    showQuizLoadingScreen(() => {
+        alert("Can only be accessed on 17/07/2025! 🎂🎉");
+        document.body.classList.remove("birthday-quiz-mode");
+    }, {
+        background: "#ffe5ec",
+        prepareDelay: QUIZ_LOADING_DURATION_MS
+    });
 }
 
 // ✅ Question Bank (Shuffled Every Test)

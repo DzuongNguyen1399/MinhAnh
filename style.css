@@ -64,8 +64,16 @@ body.reading-mode > :not(#reading-cat-scene) {
     display: none !important;
 }
 
+body.womens-day-quiz-mode {
+    background-color: #fff6c7;
+}
+
+body.birthday-quiz-mode {
+    background-color: #ffe5ec;
+}
+
 body.shop-mode {
-    background-color: #4d2f1c;
+    background-color: transparent;
 }
 
 body.shop-mode #quiz-container,
@@ -88,8 +96,7 @@ body.shop-mode #letter-text,
 body.shop-mode #reward-button,
 body.shop-mode #back-to-shop,
 body.shop-mode #progress-container,
-body.shop-mode #front-mailbox,
-body.shop-mode #help-popup {
+body.shop-mode #front-mailbox {
     display: none !important;
 }
 
@@ -124,13 +131,74 @@ body.final-letter-transition #coin-counter,
 body.final-letter-transition #reward-button,
 body.final-letter-transition #back-to-shop,
 body.final-letter-transition #front-mailbox,
-body.final-letter-transition #help-popup,
 body.final-letter-transition .bike-bubble,
 body.final-letter-transition .bike-attachment,
 body.final-letter-transition .womens-day-intro {
     opacity: 0;
     pointer-events: none;
     transition: opacity 2s ease;
+}
+
+.loading-catpaw-screen {
+    position: fixed;
+    inset: 0;
+    display: none;
+    background: var(--loading-catpaw-bg, #4d2f1c);
+    overflow: hidden;
+    z-index: 2147483647;
+    pointer-events: none;
+}
+
+.loading-catpaw-screen.is-active {
+    display: block;
+}
+
+.loading-catpaw-reveal {
+    position: absolute;
+    inset: 0;
+    width: 0;
+    overflow: hidden;
+}
+
+.loading-catpaw-screen.is-revealing .loading-catpaw-reveal {
+    animation: loading-catpaw-reveal 3s ease-in-out forwards;
+}
+
+.loading-catpaw-image {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -6vh;
+    width: 100vw;
+    height: 106vh;
+    object-fit: cover;
+    object-position: center bottom;
+}
+
+@keyframes loading-catpaw-reveal {
+    0% {
+        width: 0;
+    }
+
+    24% {
+        width: 18%;
+    }
+
+    46% {
+        width: 22%;
+    }
+
+    72% {
+        width: 68%;
+    }
+
+    86% {
+        width: 74%;
+    }
+
+    100% {
+        width: 100%;
+    }
 }
 
 body.shop-item-view-active .womens-day-intro {
@@ -510,6 +578,7 @@ body.reading-mode .reading-cat-scene {
 }
 
 .reading-lyrics-panel {
+    position: relative;
     width: min(34vw, 430px);
     max-height: min(74vh, 620px);
     align-self: center;
@@ -530,6 +599,41 @@ body.reading-mode .reading-cat-scene {
     transition: opacity 1.6s ease;
 }
 
+.reading-lyrics-hint {
+    position: absolute;
+    left: 18px;
+    top: calc(100% + 14px);
+    opacity: 0;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba(255, 250, 193, 0.98), transparent);
+    filter: drop-shadow(0 0 8px rgba(255, 250, 193, 0.7));
+    width: 94px;
+    height: 3px;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+
+.reading-lyrics-hint.is-running {
+    animation: reading-lyrics-border-hint 1.9s linear 1;
+}
+
+.reading-lyrics-panel:has(.reading-lyrics-hint.is-running) {
+    opacity: 1;
+    transition: none;
+}
+
+.reading-lyrics-panel:has(.reading-lyrics-hint.is-running) .reading-lyrics-list {
+    visibility: hidden;
+}
+
+.reading-lyrics-panel.is-visible .reading-lyrics-list {
+    visibility: visible;
+}
+
+.reading-lyrics-panel.is-visible:has(.reading-lyrics-hint.is-running) .reading-lyrics-list {
+    visibility: hidden;
+}
+
 .reading-lyrics-panel.is-toggleable {
     cursor: pointer;
     pointer-events: auto;
@@ -548,6 +652,7 @@ body.reading-mode .reading-cat-scene {
     max-height: inherit;
     overflow: hidden;
     padding: 4px 12px 4px 0;
+    visibility: hidden;
 }
 
 .reading-lyric-line {
@@ -574,6 +679,47 @@ body.reading-mode .reading-cat-scene {
     50%,
     100% {
         transform: rotate(-20deg);
+    }
+}
+
+@keyframes reading-lyrics-border-hint {
+    0% {
+        opacity: 1;
+        left: 18px;
+        top: calc(100% + 14px);
+        transform: translate(-50%, -50%) rotate(-90deg);
+    }
+
+    25% {
+        left: 18px;
+        top: 14px;
+        transform: translate(-50%, -50%) rotate(-90deg);
+    }
+
+    50% {
+        left: calc(100% + 2px);
+        top: 14px;
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    75% {
+        left: calc(100% + 2px);
+        top: calc(100% + 14px);
+        transform: translate(-50%, -50%) rotate(90deg);
+    }
+
+    99% {
+        opacity: 1;
+        left: 18px;
+        top: calc(100% + 14px);
+        transform: translate(-50%, -50%) rotate(180deg);
+    }
+
+    100% {
+        opacity: 0;
+        left: 18px;
+        top: calc(100% + 14px);
+        transform: translate(-50%, -50%) rotate(180deg);
     }
 }
 
@@ -883,36 +1029,6 @@ body.rain-mode.rain-dry-stage #rain-overlay {
     }
 }
 
-/* 📜 Help Popup */
-.help-container {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.help-content {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    max-width: 500px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-}
-
-.help-content img {
-    width: 40%;
-    max-width: 300px;
-    margin-bottom: 15px;
-    border-radius: 5px;
-}
-
 /* Birthday! button (2nd child in quiz-selection) */
 #quiz-selection .quiz-option:nth-child(2) {
     background: linear-gradient(90deg, #ffecd2 0%, #fcb69f 100%);
@@ -979,6 +1095,7 @@ body.rain-mode.rain-dry-stage #rain-overlay {
 
 /* 🔵 Progress Bar Container */
 #progress-container {
+    display: none;
     width: 200px;
     height: 30px;
     border: 2px solid black;
@@ -1284,6 +1401,58 @@ h1 {
     outline-offset: 2px;
 }
 
+#quiz-selection .quiz-option {
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    border-radius: 8px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35), 0 6px 18px rgba(96, 60, 25, 0.18);
+    position: relative;
+    overflow: hidden;
+}
+
+#quiz-selection .quiz-option::before,
+#quiz-selection .quiz-option::after {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border-radius: 6px;
+    pointer-events: none;
+}
+
+#quiz-selection .quiz-option::before {
+    background: var(--quiz-option-sheen, linear-gradient(140deg, rgba(255, 244, 219, 0.6), rgba(205, 150, 82, 0.35)));
+    mix-blend-mode: multiply;
+}
+
+#quiz-selection .quiz-option::after {
+    border: 1px solid var(--quiz-option-inner-line, rgba(255, 255, 255, 0.32));
+}
+
+#quiz-selection .quiz-option:nth-child(1) {
+    border: 2px solid rgba(171, 116, 0, 0.6);
+    --quiz-option-sheen: linear-gradient(140deg, rgba(255, 246, 183, 0.62), rgba(220, 153, 0, 0.32));
+    --quiz-option-inner-line: rgba(255, 255, 230, 0.42);
+}
+
+#quiz-selection .quiz-option:nth-child(2) {
+    --quiz-option-sheen: linear-gradient(140deg, rgba(255, 240, 246, 0.65), rgba(255, 122, 166, 0.28));
+    --quiz-option-inner-line: rgba(255, 255, 255, 0.48);
+}
+
+#quiz-selection .quiz-option:hover {
+    transform: translateY(-4px);
+}
+
+#quiz-selection .quiz-option.birthday-btn {
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-shadow: none;
+}
+
 /* Style the quiz container */
 .quiz-container {
     position: relative;
@@ -1529,6 +1698,29 @@ h1 {
     outline-offset: 2px;
 }
 
+body.womens-day-quiz-mode #toeic-title {
+    color: #8a5a00;
+    text-shadow: 0 2px 8px rgba(255, 215, 112, 0.55);
+}
+
+body.womens-day-quiz-mode .options button {
+    background: linear-gradient(180deg, #fff2a8 0%, #ffd866 100%);
+    color: #5d3b00;
+    border: 2px solid rgba(179, 119, 0, 0.42);
+    box-shadow: 0 8px 18px rgba(143, 93, 0, 0.16);
+}
+
+body.womens-day-quiz-mode .options button:hover {
+    background: linear-gradient(180deg, #ffe887 0%, #ffc83d 100%);
+    color: #442900;
+    box-shadow: 0 10px 22px rgba(143, 93, 0, 0.22);
+}
+
+body.womens-day-quiz-mode .options button:focus-visible {
+    outline: 3px solid #d69a00;
+    outline-offset: 2px;
+}
+
 .try-again-btn {
     display: inline-block;
     margin-top: 24px;
@@ -1746,7 +1938,7 @@ h1 {
 /* 🐱 Ensure the Big Cat is Visible */
 #big-cat-container {
     position: fixed;
-    bottom: 0; /* Sit at the bottom of the screen */
+    bottom: -42px; /* Sit slightly lower at the bottom of the screen */
     left: 50%;
     transform: translateX(-50%);
     width: 300px; /* Adjust size based on your image */
@@ -1787,6 +1979,18 @@ h1 {
 
 
 /* 🐱 Idle Cat - Start Off-Screen and Rotated */
+#idle-cat,
+#idle-cat-2,
+#idle-cat-3,
+#idle-cat-4,
+#idle-cat-5,
+#idle-cat-6,
+#idle-cat-7,
+#idle-cat-8,
+#idle-cat-9 {
+    z-index: 1100;
+}
+
 #idle-cat {
     position: fixed;
     top: 5%;  /* Move it to the vertical center */

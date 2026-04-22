@@ -9,14 +9,6 @@
 
 </head>
 <body>
-    <!-- 📜 Help Popup -->
-    <div id="help-popup" class="help-container" onclick="hideHelp()">
-        <div class="help-content">
-            <img src="Images/help-image.png" alt="Help Image">
-            <p>Bài ni cậu chỉ cần làm đúng 20 câu thui là sẽ được quà. HeHe. Goodluck !</p>
-        </div>
-    </div>
-
     <audio id="cat-sound">
         <source src="Audio/cat-meow.mp3" type="audio/mpeg">
     </audio>
@@ -44,6 +36,12 @@
     <audio id="nuan-nuan-audio" loop preload="auto">
         <source src="Audio/NuanNuan.mp3" type="audio/mpeg">
     </audio>
+
+    <div id="loading-catpaw-screen" class="loading-catpaw-screen" aria-hidden="true">
+        <div class="loading-catpaw-reveal">
+            <img id="loading-catpaw-image" src="Images/Loading_catpaw.png" alt="" class="loading-catpaw-image">
+        </div>
+    </div>
 
     <!-- Progress Meter UI -->
     <div id="progress-container">
@@ -103,12 +101,11 @@
             <!-- ✅ Add ID to the big TOEIC Quiz title -->
             <h1 id="toeic-title" class="quiz-title">MINH ANH'S TOEIC QUIZ</h1>
         
-            <!-- ✅ New Start and Help Buttons -->
+            <!-- ✅ Quiz selection buttons -->
     <div id="quiz-selection">
         <button class="quiz-option" onclick="startTest()">International Women's Day</button>
         <button class="quiz-option birthday-btn" onclick="birthdayOption()">Minh Anh's Birthday</button>
         <button class="quiz-option" onclick="start2010Test()">Vietnamese Women's Day</button>
-        <button class="quiz-option" onclick="showHelp()">HELP</button>
     </div>
         
             <!-- ✅ The actual quiz (hidden at first) -->
@@ -144,6 +141,7 @@
             <button id="reading-music-toggle" class="reading-music-toggle-hitbox" type="button" aria-label="Turn off Nuan Nuan music" aria-pressed="true"></button>
         </div>
         <aside id="reading-lyrics-panel" class="reading-lyrics-panel" aria-label="Nuan Nuan lyrics">
+            <span id="reading-lyrics-hint" class="reading-lyrics-hint" aria-hidden="true"></span>
             <div id="reading-lyrics-list" class="reading-lyrics-list"></div>
         </aside>
     </main>
