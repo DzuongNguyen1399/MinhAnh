@@ -375,6 +375,8 @@ const elements = {
     bigCatContainer: document.getElementById("big-cat-container"),
     frontMailbox: document.getElementById("front-mailbox"),
     readingCatScene: document.getElementById("reading-cat-scene"),
+    readingLetterLeft: document.getElementById("reading-letter-left"),
+    readingLetterRight: document.getElementById("reading-letter-right"),
     readingMusicToggle: document.getElementById("reading-music-toggle"),
     readingMusicNote: document.getElementById("reading-music-note"),
     readingLyricsPanel: document.getElementById("reading-lyrics-panel"),
@@ -679,6 +681,14 @@ if (elements.frontMailbox) {
 
 if (elements.readingMusicToggle) {
     elements.readingMusicToggle.addEventListener("click", handleReadingMusicToggleClick);
+}
+
+if (elements.readingLetterLeft) {
+    elements.readingLetterLeft.addEventListener("click", (event) => handleReadingGroundLetterClick(event, "left"));
+}
+
+if (elements.readingLetterRight) {
+    elements.readingLetterRight.addEventListener("click", (event) => handleReadingGroundLetterClick(event, "right"));
 }
 
 if (elements.readingLyricsPanel) {
@@ -1480,6 +1490,9 @@ function handleReadingLyricsToggleClick(event) {
     if (event) {
         event.preventDefault();
     }
+    if (!isNuanNuanAudioPlaying()) {
+        return;
+    }
     nuanNuanLyricsVisibilityEnabled = !nuanNuanLyricsVisibilityEnabled;
     updateNuanNuanLyricsVisibility();
 }
@@ -1490,6 +1503,18 @@ function handleReadingLyricsToggleKeydown(event) {
     }
     event.preventDefault();
     handleReadingLyricsToggleClick(event);
+}
+
+function handleReadingGroundLetterClick(event, side) {
+    if (event) {
+        event.preventDefault();
+    }
+    const selectedLetter = side === "left" ? elements.readingLetterLeft : elements.readingLetterRight;
+    [elements.readingLetterLeft, elements.readingLetterRight].forEach((letter) => {
+        if (letter) {
+            letter.classList.toggle("is-selected", letter === selectedLetter);
+        }
+    });
 }
 
 function playNuanNuanAudio() {
@@ -1556,6 +1581,11 @@ function resetNuanNuanAudio() {
     updateNuanNuanToggleState(false);
 }
 
+function isNuanNuanAudioPlaying() {
+    const audio = elements.nuanNuanAudio;
+    return Boolean(audio && !audio.paused && !audio.ended);
+}
+
 function updateNuanNuanToggleState(isPlaying) {
     if (!elements.readingMusicToggle) {
         return;
@@ -1575,10 +1605,11 @@ function updateNuanNuanLyricsVisibility() {
     if (!elements.readingLyricsPanel) {
         return;
     }
-    const audio = elements.nuanNuanAudio;
-    const isPlaying = Boolean(audio && !audio.paused && !audio.ended);
+    const isPlaying = isNuanNuanAudioPlaying();
     const isVisible = nuanNuanLyricsVisibilityEnabled && isPlaying;
     elements.readingLyricsPanel.classList.toggle("is-visible", isVisible);
+    elements.readingLyricsPanel.classList.toggle("is-toggleable", isPlaying);
+    elements.readingLyricsPanel.setAttribute("aria-disabled", isPlaying ? "false" : "true");
     elements.readingLyricsPanel.setAttribute(
         "aria-pressed",
         nuanNuanLyricsVisibilityEnabled ? "true" : "false"
@@ -1587,6 +1618,7 @@ function updateNuanNuanLyricsVisibility() {
         "aria-label",
         nuanNuanLyricsVisibilityEnabled ? "Hide Nuan Nuan lyrics" : "Show Nuan Nuan lyrics"
     );
+    elements.readingLyricsPanel.setAttribute("tabindex", isPlaying ? "0" : "-1");
 }
 
 function renderNuanNuanLyrics() {

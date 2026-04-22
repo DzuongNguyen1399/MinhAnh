@@ -362,13 +362,90 @@ body.reading-mode .reading-cat-scene {
     padding-left: clamp(220px, 29vw, 520px);
 }
 
-.reading-cat-image {
+.reading-cat-stack {
+    position: relative;
     width: min(52vw, 420px);
     max-height: min(84vh, 680px);
-    height: auto;
-    object-fit: contain;
+    aspect-ratio: 2 / 3;
     transform: translate(3vw, 14vh);
     filter: drop-shadow(0 22px 34px rgba(33, 48, 35, 0.28));
+    line-height: 0;
+    flex: 0 0 auto;
+}
+
+.reading-cat-image,
+.reading-letter-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.reading-cat-image {
+    display: block;
+}
+
+.reading-letter-overlay {
+    pointer-events: none;
+    z-index: 1;
+    transition: transform 0.18s ease, filter 0.18s ease;
+}
+
+.reading-letter-overlay-left {
+    transform-origin: 16.2% 69.2%;
+}
+
+.reading-letter-overlay-right {
+    transform-origin: 80.6% 77.4%;
+}
+
+.reading-letter-hitbox {
+    position: absolute;
+    z-index: 2;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    cursor: pointer;
+    appearance: none;
+}
+
+.reading-letter-hitbox-left {
+    left: 4.6%;
+    top: 65.8%;
+    width: 23%;
+    height: 6.8%;
+}
+
+.reading-letter-hitbox-right {
+    left: 67.1%;
+    top: 74.2%;
+    width: 34%;
+    height: 6.6%;
+}
+
+.reading-letter-hitbox:hover,
+.reading-letter-hitbox:focus-visible {
+    outline: none;
+}
+
+.reading-letter-hitbox.is-selected {
+    background: transparent;
+}
+
+.reading-cat-stack:has(.reading-letter-hitbox-left:hover) .reading-letter-overlay-left,
+.reading-cat-stack:has(.reading-letter-hitbox-left:focus-visible) .reading-letter-overlay-left,
+.reading-cat-stack:has(.reading-letter-hitbox-left.is-selected) .reading-letter-overlay-left {
+    transform: scale(1.16);
+    filter: drop-shadow(0 10px 14px rgba(33, 48, 35, 0.22));
+}
+
+.reading-cat-stack:has(.reading-letter-hitbox-right:hover) .reading-letter-overlay-right,
+.reading-cat-stack:has(.reading-letter-hitbox-right:focus-visible) .reading-letter-overlay-right,
+.reading-cat-stack:has(.reading-letter-hitbox-right.is-selected) .reading-letter-overlay-right {
+    transform: scale(1.16);
+    filter: drop-shadow(0 10px 14px rgba(33, 48, 35, 0.22));
 }
 
 .reading-music-cluster {
@@ -378,6 +455,7 @@ body.reading-mode .reading-cat-scene {
     transform: translate(-2vw, 30vh);
     transition: transform 0.18s ease;
     line-height: 0;
+    pointer-events: none;
 }
 
 .reading-music-cluster:has(.reading-music-toggle-hitbox:hover),
@@ -398,6 +476,7 @@ body.reading-mode .reading-cat-scene {
     appearance: none;
     cursor: pointer;
     z-index: 2;
+    pointer-events: auto;
 }
 
 .reading-music-toggle-hitbox:focus-visible {
@@ -444,10 +523,16 @@ body.reading-mode .reading-cat-scene {
     font-size: clamp(17px, 1.7vw, 27px);
     line-height: 1.35;
     opacity: 0;
-    cursor: pointer;
+    cursor: default;
+    pointer-events: none;
     transform: translateY(-4vh);
     text-shadow: 0 2px 8px rgba(31, 44, 33, 0.34);
     transition: opacity 1.6s ease;
+}
+
+.reading-lyrics-panel.is-toggleable {
+    cursor: pointer;
+    pointer-events: auto;
 }
 
 .reading-lyrics-panel.is-visible {
@@ -499,7 +584,7 @@ body.reading-mode .reading-cat-scene {
         padding-right: 8px;
     }
 
-    .reading-cat-image {
+    .reading-cat-stack {
         width: min(54vw, 360px);
         transform: translate(4vw, 14vh);
     }

@@ -131,7 +131,13 @@
     </button>
 
     <main id="reading-cat-scene" class="reading-cat-scene" aria-hidden="true">
-        <img id="reading-cat-image" class="reading-cat-image" src="Images/Minh_Cat_reading.png" alt="Minh Anh reading cat">
+        <div class="reading-cat-stack">
+            <img id="reading-cat-image" class="reading-cat-image" src="Images/Minh_Cat_reading.png" alt="Minh Anh reading cat">
+            <img class="reading-letter-overlay reading-letter-overlay-left" src="Images/Letter_bottom_left.png" alt="" aria-hidden="true">
+            <img class="reading-letter-overlay reading-letter-overlay-right" src="Images/Letter_bottom_right.png" alt="" aria-hidden="true">
+            <button id="reading-letter-left" class="reading-letter-hitbox reading-letter-hitbox-left" type="button" aria-label="Open the letter on the left"></button>
+            <button id="reading-letter-right" class="reading-letter-hitbox reading-letter-hitbox-right" type="button" aria-label="Open the letter on the right"></button>
+        </div>
         <div class="reading-music-cluster">
             <img id="reading-music-player" class="reading-music-player" src="Images/musicplayer.png" alt="">
             <img id="reading-music-note" class="reading-music-note" src="Images/musicnote.png" alt="">
