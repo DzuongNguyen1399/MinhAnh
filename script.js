@@ -355,6 +355,7 @@ let activeNuanNuanLyricIndex = -1;
 let nuanNuanLyricsVisibilityEnabled = false;
 let quizLoadingActive = false;
 let readingLyricsHintTimeout = null;
+let readingQuietVolumeFrame = null;
 
 const elements = {
     quizSelection: document.getElementById("quiz-selection"),
@@ -384,6 +385,8 @@ const elements = {
     loadingCatpawImage: document.getElementById("loading-catpaw-image"),
     readingLetterLeft: document.getElementById("reading-letter-left"),
     readingLetterRight: document.getElementById("reading-letter-right"),
+    readingBaseLetter: document.getElementById("reading-base-letter"),
+    readingFirstLetter: document.getElementById("reading-first-letter"),
     readingMusicToggle: document.getElementById("reading-music-toggle"),
     readingMusicNote: document.getElementById("reading-music-note"),
     readingLyricsHint: document.getElementById("reading-lyrics-hint"),
@@ -689,6 +692,14 @@ if (elements.frontMailbox) {
 
 if (elements.readingMusicToggle) {
     elements.readingMusicToggle.addEventListener("click", handleReadingMusicToggleClick);
+}
+
+if (elements.readingCatScene) {
+    elements.readingCatScene.addEventListener("click", handleReadingSceneDismissClick);
+}
+
+if (elements.readingFirstLetter) {
+    elements.readingFirstLetter.addEventListener("click", handleReadingFirstLetterClick);
 }
 
 if (elements.readingLetterLeft) {
@@ -1481,6 +1492,7 @@ function handleFrontMailboxClick(event) {
 
 function showReadingCatScene() {
     resetNuanNuanAudio();
+    restoreReadingMusicVolume();
     setVisualMode(null);
     stopShopMusic({ reset: true, fade: false });
     [elements.lemonTreeAudio, document.getElementById("ambient-music"), document.getElementById("love-song")].forEach((audio) => {
@@ -1522,7 +1534,7 @@ function showReadingCatScene() {
 
     document.body.className = "reading-mode";
     if (elements.readingCatScene) {
-        elements.readingCatScene.classList.remove("reading-sequence-start");
+        elements.readingCatScene.classList.remove("is-first-letter-removed", "is-letter-open", "reading-sequence-start");
         elements.readingCatScene.classList.add("is-entering");
         elements.readingCatScene.setAttribute("aria-hidden", "false");
         void elements.readingCatScene.offsetWidth;
@@ -1537,6 +1549,11 @@ function showReadingCatScene() {
             }
         }, 1200);
     }
+    [elements.readingLetterLeft, elements.readingLetterRight].forEach((letter) => {
+        if (letter) {
+            letter.classList.remove("is-selected");
+        }
+    });
 }
 
 function handleReadingMusicToggleClick(event) {
@@ -1550,6 +1567,9 @@ function handleReadingMusicToggleClick(event) {
     if (audio.paused || audio.ended) {
         updateNuanNuanToggleState(true);
         playNuanNuanAudio();
+        if (elements.readingCatScene && elements.readingCatScene.classList.contains("is-letter-open")) {
+            fadeNuanNuanToQuietVolume();
+        }
         scheduleReadingLyricsHint();
         return;
     }
@@ -1630,6 +1650,87 @@ function handleReadingGroundLetterClick(event, side) {
             letter.classList.toggle("is-selected", letter === selectedLetter);
         }
     });
+    if (elements.readingCatScene) {
+        elements.readingCatScene.classList.remove("is-first-letter-removed");
+        elements.readingCatScene.classList.add("is-letter-open");
+    }
+    fadeNuanNuanToQuietVolume();
+}
+
+function handleReadingFirstLetterClick(event) {
+    if (event) {
+        event.preventDefault();
+    }
+    if (!elements.readingCatScene || !elements.readingCatScene.classList.contains("is-letter-open")) {
+        return;
+    }
+    elements.readingCatScene.classList.add("is-first-letter-removed");
+}
+
+function handleReadingSceneDismissClick(event) {
+    if (
+        !elements.readingCatScene ||
+        !elements.readingCatScene.classList.contains("is-letter-open") ||
+        !event
+    ) {
+        return;
+    }
+    const target = event.target;
+    if (
+        target === elements.readingBaseLetter ||
+        target === elements.readingFirstLetter ||
+        target === elements.readingLetterLeft ||
+        target === elements.readingLetterRight
+    ) {
+        return;
+    }
+    elements.readingCatScene.classList.remove("is-letter-open");
+    [elements.readingLetterLeft, elements.readingLetterRight].forEach((letter) => {
+        if (letter) {
+            letter.classList.remove("is-selected");
+        }
+    });
+    restoreReadingMusicVolume();
+}
+
+function fadeNuanNuanToQuietVolume() {
+    const audio = elements.nuanNuanAudio;
+    if (!audio) {
+        return;
+    }
+    if (readingQuietVolumeFrame) {
+        cancelAnimationFrame(readingQuietVolumeFrame);
+        readingQuietVolumeFrame = null;
+    }
+    const targetVolume = 0.06;
+    const startVolume = audio.volume;
+    const startedAt = performance.now();
+    const duration = 1800;
+
+    function step(now) {
+        const progress = Math.min(1, (now - startedAt) / duration);
+        const easedProgress = 1 - Math.pow(1 - progress, 3);
+        audio.volume = startVolume + (targetVolume - startVolume) * easedProgress;
+        if (progress < 1) {
+            readingQuietVolumeFrame = requestAnimationFrame(step);
+            return;
+        }
+        audio.volume = targetVolume;
+        readingQuietVolumeFrame = null;
+    }
+
+    readingQuietVolumeFrame = requestAnimationFrame(step);
+}
+
+function restoreReadingMusicVolume() {
+    const audio = elements.nuanNuanAudio;
+    if (readingQuietVolumeFrame) {
+        cancelAnimationFrame(readingQuietVolumeFrame);
+        readingQuietVolumeFrame = null;
+    }
+    if (audio) {
+        audio.volume = ensureBaseVolume(audio, 0.75);
+    }
 }
 
 function playNuanNuanAudio() {

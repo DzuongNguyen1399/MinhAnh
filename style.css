@@ -430,6 +430,12 @@ body.reading-mode .reading-cat-scene {
     padding-left: clamp(220px, 29vw, 520px);
 }
 
+.reading-cat-scene.is-letter-open .reading-cat-stack,
+.reading-cat-scene.is-letter-open .reading-music-cluster,
+.reading-cat-scene.is-letter-open .reading-lyrics-panel {
+    filter: blur(2.5px);
+}
+
 .reading-cat-stack {
     position: relative;
     width: min(52vw, 420px);
@@ -704,6 +710,60 @@ body.reading-mode .reading-cat-scene {
     transform: scale(1.04);
 }
 
+.reading-base-letter,
+.reading-first-letter {
+    position: absolute;
+    left: clamp(-72px, -3vw, -24px);
+    top: 50%;
+    width: min(59.4vw, 756px);
+    max-height: 86vh;
+    object-fit: contain;
+    opacity: 0;
+    transform: translate(-42px, -50%) scale(0.94);
+    transform-origin: left center;
+    filter: drop-shadow(0 26px 38px rgba(31, 44, 33, 0.3));
+    pointer-events: none;
+    z-index: 5;
+}
+
+.reading-base-letter {
+    transform: translate(-24px, -47%) scale(0.94) rotate(1.5deg);
+    z-index: 5;
+    transition:
+        opacity 0.6s ease 0.3s,
+        transform 1.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reading-first-letter {
+    transform: translate(-42px, -50%) scale(0.94);
+    z-index: 6;
+    cursor: pointer;
+    transition:
+        opacity 0.55s ease,
+        transform 1.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reading-cat-scene.is-letter-open .reading-base-letter {
+    opacity: 1;
+    transform: translate(18px, -47%) scale(1) rotate(1.5deg);
+    pointer-events: auto;
+}
+
+.reading-cat-scene.is-letter-open .reading-first-letter {
+    opacity: 1;
+    transform: translate(0, -50%) scale(1);
+    pointer-events: auto;
+}
+
+.reading-cat-scene.is-first-letter-removed .reading-first-letter {
+    opacity: 0;
+    transform: translate(-18px, -50%) scale(0.96);
+    pointer-events: none;
+    transition:
+        opacity 0.45s ease,
+        transform 0.45s ease;
+}
+
 @keyframes reading-music-note-flip {
     0%,
     49.99% {
@@ -878,6 +938,30 @@ body.reading-mode .reading-cat-scene {
         font-size: 16px;
         line-height: 1.25;
         transform: none;
+    }
+
+    .reading-base-letter,
+    .reading-first-letter {
+        left: -34px;
+        top: 48%;
+        width: min(78.3vw, 432px);
+        max-height: 78vh;
+    }
+
+    .reading-base-letter {
+        transform: translate(-12px, -45%) scale(0.94) rotate(1.5deg);
+    }
+
+    .reading-first-letter {
+        transform: translate(-24px, -50%) scale(0.94);
+    }
+
+    .reading-cat-scene.is-letter-open .reading-base-letter {
+        transform: translate(12px, -45%) scale(1) rotate(1.5deg);
+    }
+
+    .reading-cat-scene.is-letter-open .reading-first-letter {
+        transform: translate(0, -50%) scale(1);
     }
 
     .reading-lyrics-list {
