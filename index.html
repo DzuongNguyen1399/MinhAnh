@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minh Anh's TOEIC Quiz</title>
-    <link rel="stylesheet" href="style.css?v=reading-letter-overlay-20260507">
+    <link rel="stylesheet" href="style.css?v=reading-letter-stack-20260508">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 
 </head>
@@ -35,6 +35,10 @@
 
     <audio id="nuan-nuan-audio" loop preload="auto">
         <source src="Audio/NuanNuan.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="pageflip-audio" preload="auto">
+        <source src="Audio/pageflip.mp3" type="audio/mpeg">
     </audio>
 
     <div id="loading-catpaw-screen" class="loading-catpaw-screen" aria-hidden="true">
@@ -144,8 +148,11 @@
             <span id="reading-lyrics-hint" class="reading-lyrics-hint" aria-hidden="true"></span>
             <div id="reading-lyrics-list" class="reading-lyrics-list"></div>
         </aside>
-        <img id="reading-base-letter" class="reading-base-letter" src="Images/base_letter.png" alt="Opened letter">
-        <img id="reading-first-letter" class="reading-first-letter" src="Images/Letter_firstpage.png?v=20260507b" alt="First page of the opened letter">
+        <img id="reading-base-letter" class="reading-base-letter" src="Images/Baseletter.png?v=20260510-2211" alt="Opened letter">
+        <img id="reading-letter-page-4" class="reading-front-letter reading-front-letter-4" data-letter-page="4" src="Images/Letter_forthpage.png?v=20260510-new" alt="Fourth page of the opened letter">
+        <img id="reading-letter-page-3" class="reading-front-letter reading-front-letter-3" data-letter-page="3" src="Images/Letter_thirdpage.png?v=20260510-2227" alt="Third page of the opened letter">
+        <img id="reading-letter-page-2" class="reading-front-letter reading-front-letter-2" data-letter-page="2" src="Images/Letter_secondpage.png?v=20260510-replaced" alt="Second page of the opened letter">
+        <img id="reading-first-letter" class="reading-front-letter reading-front-letter-1" data-letter-page="1" src="Images/Letter_firstpage.png?v=20260508stack" alt="First page of the opened letter">
     </main>
 
 
@@ -294,6 +301,6 @@
         </audio>
             </div>
 
-    <script src="script.js?v=reading-letter-overlay-20260507"></script>
+    <script src="script.js?v=reading-letter-stack-20260508"></script>
 </body>
 </html>

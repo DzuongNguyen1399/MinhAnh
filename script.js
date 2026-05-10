@@ -356,6 +356,7 @@ let nuanNuanLyricsVisibilityEnabled = false;
 let quizLoadingActive = false;
 let readingLyricsHintTimeout = null;
 let readingQuietVolumeFrame = null;
+let readingRemovedFrontLetterCount = 0;
 
 const elements = {
     quizSelection: document.getElementById("quiz-selection"),
@@ -387,6 +388,9 @@ const elements = {
     readingLetterRight: document.getElementById("reading-letter-right"),
     readingBaseLetter: document.getElementById("reading-base-letter"),
     readingFirstLetter: document.getElementById("reading-first-letter"),
+    readingFrontLetters: Array.from(document.querySelectorAll(".reading-front-letter")).sort((a, b) => {
+        return Number(a.dataset.letterPage || 0) - Number(b.dataset.letterPage || 0);
+    }),
     readingMusicToggle: document.getElementById("reading-music-toggle"),
     readingMusicNote: document.getElementById("reading-music-note"),
     readingLyricsHint: document.getElementById("reading-lyrics-hint"),
@@ -396,6 +400,7 @@ const elements = {
     sunAudio: document.getElementById("sun-audio"),
     lemonTreeAudio: document.getElementById("lemon-tree-audio"),
     nuanNuanAudio: document.getElementById("nuan-nuan-audio"),
+    pageflipAudio: document.getElementById("pageflip-audio"),
     rainOverlay: document.getElementById("rain-overlay"),
     womensDayIntro: document.getElementById("womens-day-intro"),
     womensDayCatseller: document.getElementById("womens-day-catseller"),
@@ -698,8 +703,10 @@ if (elements.readingCatScene) {
     elements.readingCatScene.addEventListener("click", handleReadingSceneDismissClick);
 }
 
-if (elements.readingFirstLetter) {
-    elements.readingFirstLetter.addEventListener("click", handleReadingFirstLetterClick);
+if (elements.readingFrontLetters.length) {
+    elements.readingFrontLetters.forEach((letter) => {
+        letter.addEventListener("click", handleReadingFrontLetterClick);
+    });
 }
 
 if (elements.readingLetterLeft) {
@@ -1534,7 +1541,8 @@ function showReadingCatScene() {
 
     document.body.className = "reading-mode";
     if (elements.readingCatScene) {
-        elements.readingCatScene.classList.remove("is-first-letter-removed", "is-letter-open", "reading-sequence-start");
+        resetReadingFrontLetters();
+        elements.readingCatScene.classList.remove("is-letter-open", "reading-sequence-start");
         elements.readingCatScene.classList.add("is-entering");
         elements.readingCatScene.setAttribute("aria-hidden", "false");
         void elements.readingCatScene.offsetWidth;
@@ -1651,20 +1659,72 @@ function handleReadingGroundLetterClick(event, side) {
         }
     });
     if (elements.readingCatScene) {
-        elements.readingCatScene.classList.remove("is-first-letter-removed");
+        resetReadingFrontLetters();
         elements.readingCatScene.classList.add("is-letter-open");
     }
     fadeNuanNuanToQuietVolume();
 }
 
-function handleReadingFirstLetterClick(event) {
+function handleReadingFrontLetterClick(event) {
     if (event) {
         event.preventDefault();
     }
     if (!elements.readingCatScene || !elements.readingCatScene.classList.contains("is-letter-open")) {
         return;
     }
-    elements.readingCatScene.classList.add("is-first-letter-removed");
+    const activeLetter = elements.readingFrontLetters[readingRemovedFrontLetterCount];
+    if (event && event.currentTarget !== activeLetter) {
+        return;
+    }
+    playReadingPageFlipSound();
+    readingRemovedFrontLetterCount = Math.min(
+        readingRemovedFrontLetterCount + 1,
+        elements.readingFrontLetters.length
+    );
+    updateReadingFrontLetterState();
+}
+
+function playReadingPageFlipSound() {
+    const audio = elements.pageflipAudio;
+    if (!audio) {
+        return;
+    }
+    const flipAudio = audio.cloneNode(true);
+    try {
+        flipAudio.currentTime = 0.693;
+        flipAudio.volume = 0.4608;
+        flipAudio.playbackRate = 1 + Math.random() * 0.06;
+        flipAudio.addEventListener("ended", () => {
+            flipAudio.remove();
+        }, { once: true });
+        const playPromise = flipAudio.play();
+        if (playPromise && typeof playPromise.catch === "function") {
+            playPromise.catch((error) => {
+                console.warn("Unable to play page flip audio:", error);
+                flipAudio.remove();
+            });
+        }
+    } catch (err) {
+        console.warn("Unable to play page flip audio:", err);
+        flipAudio.remove();
+    }
+}
+
+function resetReadingFrontLetters() {
+    readingRemovedFrontLetterCount = 0;
+    updateReadingFrontLetterState();
+}
+
+function updateReadingFrontLetterState() {
+    if (!elements.readingCatScene) {
+        return;
+    }
+    elements.readingFrontLetters.forEach((letter, index) => {
+        elements.readingCatScene.classList.toggle(
+            `is-front-page-${index + 1}-removed`,
+            index < readingRemovedFrontLetterCount
+        );
+    });
 }
 
 function handleReadingSceneDismissClick(event) {
@@ -1678,13 +1738,14 @@ function handleReadingSceneDismissClick(event) {
     const target = event.target;
     if (
         target === elements.readingBaseLetter ||
-        target === elements.readingFirstLetter ||
+        elements.readingFrontLetters.includes(target) ||
         target === elements.readingLetterLeft ||
         target === elements.readingLetterRight
     ) {
         return;
     }
     elements.readingCatScene.classList.remove("is-letter-open");
+    resetReadingFrontLetters();
     [elements.readingLetterLeft, elements.readingLetterRight].forEach((letter) => {
         if (letter) {
             letter.classList.remove("is-selected");

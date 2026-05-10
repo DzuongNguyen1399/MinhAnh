@@ -711,7 +711,7 @@ body.reading-mode .reading-cat-scene {
 }
 
 .reading-base-letter,
-.reading-first-letter {
+.reading-front-letter {
     position: absolute;
     left: clamp(-72px, -3vw, -24px);
     top: 50%;
@@ -734,13 +734,28 @@ body.reading-mode .reading-cat-scene {
         transform 1.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.reading-first-letter {
+.reading-front-letter {
     transform: translate(-42px, -50%) scale(0.94);
-    z-index: 6;
     cursor: pointer;
     transition:
         opacity 0.55s ease,
         transform 1.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reading-front-letter-4 {
+    z-index: 6;
+}
+
+.reading-front-letter-3 {
+    z-index: 7;
+}
+
+.reading-front-letter-2 {
+    z-index: 8;
+}
+
+.reading-front-letter-1 {
+    z-index: 9;
 }
 
 .reading-cat-scene.is-letter-open .reading-base-letter {
@@ -749,13 +764,38 @@ body.reading-mode .reading-cat-scene {
     pointer-events: auto;
 }
 
-.reading-cat-scene.is-letter-open .reading-first-letter {
+.reading-cat-scene.is-letter-open .reading-front-letter {
     opacity: 1;
+    pointer-events: none;
+}
+
+.reading-cat-scene.is-letter-open .reading-front-letter-4 {
+    transform: translate(12px, -48%) scale(1) rotate(1deg);
+}
+
+.reading-cat-scene.is-letter-open .reading-front-letter-3 {
+    transform: translate(8px, -49%) scale(1) rotate(0.6deg);
+}
+
+.reading-cat-scene.is-letter-open .reading-front-letter-2 {
+    transform: translate(4px, -49.5%) scale(1) rotate(0.3deg);
+}
+
+.reading-cat-scene.is-letter-open .reading-front-letter-1 {
     transform: translate(0, -50%) scale(1);
+}
+
+.reading-cat-scene.is-letter-open:not(.is-front-page-1-removed) .reading-front-letter-1,
+.reading-cat-scene.is-front-page-1-removed:not(.is-front-page-2-removed) .reading-front-letter-2,
+.reading-cat-scene.is-front-page-2-removed:not(.is-front-page-3-removed) .reading-front-letter-3,
+.reading-cat-scene.is-front-page-3-removed:not(.is-front-page-4-removed) .reading-front-letter-4 {
     pointer-events: auto;
 }
 
-.reading-cat-scene.is-first-letter-removed .reading-first-letter {
+.reading-cat-scene.is-front-page-1-removed .reading-front-letter-1,
+.reading-cat-scene.is-front-page-2-removed .reading-front-letter-2,
+.reading-cat-scene.is-front-page-3-removed .reading-front-letter-3,
+.reading-cat-scene.is-front-page-4-removed .reading-front-letter-4 {
     opacity: 0;
     transform: translate(-18px, -50%) scale(0.96);
     pointer-events: none;
@@ -941,7 +981,7 @@ body.reading-mode .reading-cat-scene {
     }
 
     .reading-base-letter,
-    .reading-first-letter {
+    .reading-front-letter {
         left: -34px;
         top: 48%;
         width: min(78.3vw, 432px);
@@ -952,7 +992,7 @@ body.reading-mode .reading-cat-scene {
         transform: translate(-12px, -45%) scale(0.94) rotate(1.5deg);
     }
 
-    .reading-first-letter {
+    .reading-front-letter {
         transform: translate(-24px, -50%) scale(0.94);
     }
 
@@ -960,7 +1000,19 @@ body.reading-mode .reading-cat-scene {
         transform: translate(12px, -45%) scale(1) rotate(1.5deg);
     }
 
-    .reading-cat-scene.is-letter-open .reading-first-letter {
+    .reading-cat-scene.is-letter-open .reading-front-letter-4 {
+        transform: translate(9px, -47%) scale(1) rotate(1deg);
+    }
+
+    .reading-cat-scene.is-letter-open .reading-front-letter-3 {
+        transform: translate(6px, -48%) scale(1) rotate(0.6deg);
+    }
+
+    .reading-cat-scene.is-letter-open .reading-front-letter-2 {
+        transform: translate(3px, -49%) scale(1) rotate(0.3deg);
+    }
+
+    .reading-cat-scene.is-letter-open .reading-front-letter-1 {
         transform: translate(0, -50%) scale(1);
     }
 
