@@ -758,44 +758,45 @@ body.reading-mode .reading-cat-scene {
     z-index: 9;
 }
 
-.reading-cat-scene.is-letter-open .reading-base-letter {
+.reading-cat-scene.is-letter-open.is-left-letter-open .reading-base-letter-1,
+.reading-cat-scene.is-letter-open.is-right-letter-open .reading-base-letter-2 {
     opacity: 1;
     transform: translate(18px, -47%) scale(1) rotate(1.5deg);
     pointer-events: auto;
 }
 
-.reading-cat-scene.is-letter-open .reading-front-letter {
+.reading-cat-scene.is-letter-open.is-left-letter-open .reading-front-letter {
     opacity: 1;
     pointer-events: none;
 }
 
-.reading-cat-scene.is-letter-open .reading-front-letter-4 {
+.reading-cat-scene.is-letter-open.is-left-letter-open .reading-front-letter-4 {
     transform: translate(12px, -48%) scale(1) rotate(1deg);
 }
 
-.reading-cat-scene.is-letter-open .reading-front-letter-3 {
+.reading-cat-scene.is-letter-open.is-left-letter-open .reading-front-letter-3 {
     transform: translate(8px, -49%) scale(1) rotate(0.6deg);
 }
 
-.reading-cat-scene.is-letter-open .reading-front-letter-2 {
+.reading-cat-scene.is-letter-open.is-left-letter-open .reading-front-letter-2 {
     transform: translate(4px, -49.5%) scale(1) rotate(0.3deg);
 }
 
-.reading-cat-scene.is-letter-open .reading-front-letter-1 {
+.reading-cat-scene.is-letter-open.is-left-letter-open .reading-front-letter-1 {
     transform: translate(0, -50%) scale(1);
 }
 
-.reading-cat-scene.is-letter-open:not(.is-front-page-1-removed) .reading-front-letter-1,
-.reading-cat-scene.is-front-page-1-removed:not(.is-front-page-2-removed) .reading-front-letter-2,
-.reading-cat-scene.is-front-page-2-removed:not(.is-front-page-3-removed) .reading-front-letter-3,
-.reading-cat-scene.is-front-page-3-removed:not(.is-front-page-4-removed) .reading-front-letter-4 {
+.reading-cat-scene.is-letter-open.is-left-letter-open:not(.is-front-page-1-removed) .reading-front-letter-1,
+.reading-cat-scene.is-letter-open.is-left-letter-open.is-front-page-1-removed:not(.is-front-page-2-removed) .reading-front-letter-2,
+.reading-cat-scene.is-letter-open.is-left-letter-open.is-front-page-2-removed:not(.is-front-page-3-removed) .reading-front-letter-3,
+.reading-cat-scene.is-letter-open.is-left-letter-open.is-front-page-3-removed:not(.is-front-page-4-removed) .reading-front-letter-4 {
     pointer-events: auto;
 }
 
-.reading-cat-scene.is-front-page-1-removed .reading-front-letter-1,
-.reading-cat-scene.is-front-page-2-removed .reading-front-letter-2,
-.reading-cat-scene.is-front-page-3-removed .reading-front-letter-3,
-.reading-cat-scene.is-front-page-4-removed .reading-front-letter-4 {
+.reading-cat-scene.is-letter-open.is-left-letter-open.is-front-page-1-removed .reading-front-letter-1,
+.reading-cat-scene.is-letter-open.is-left-letter-open.is-front-page-2-removed .reading-front-letter-2,
+.reading-cat-scene.is-letter-open.is-left-letter-open.is-front-page-3-removed .reading-front-letter-3,
+.reading-cat-scene.is-letter-open.is-left-letter-open.is-front-page-4-removed .reading-front-letter-4 {
     opacity: 0;
     transform: translate(-18px, -50%) scale(0.96);
     pointer-events: none;
@@ -996,23 +997,24 @@ body.reading-mode .reading-cat-scene {
         transform: translate(-24px, -50%) scale(0.94);
     }
 
-    .reading-cat-scene.is-letter-open .reading-base-letter {
+    .reading-cat-scene.is-letter-open.is-left-letter-open .reading-base-letter-1,
+    .reading-cat-scene.is-letter-open.is-right-letter-open .reading-base-letter-2 {
         transform: translate(12px, -45%) scale(1) rotate(1.5deg);
     }
 
-    .reading-cat-scene.is-letter-open .reading-front-letter-4 {
+    .reading-cat-scene.is-letter-open.is-left-letter-open .reading-front-letter-4 {
         transform: translate(9px, -47%) scale(1) rotate(1deg);
     }
 
-    .reading-cat-scene.is-letter-open .reading-front-letter-3 {
+    .reading-cat-scene.is-letter-open.is-left-letter-open .reading-front-letter-3 {
         transform: translate(6px, -48%) scale(1) rotate(0.6deg);
     }
 
-    .reading-cat-scene.is-letter-open .reading-front-letter-2 {
+    .reading-cat-scene.is-letter-open.is-left-letter-open .reading-front-letter-2 {
         transform: translate(3px, -49%) scale(1) rotate(0.3deg);
     }
 
-    .reading-cat-scene.is-letter-open .reading-front-letter-1 {
+    .reading-cat-scene.is-letter-open.is-left-letter-open .reading-front-letter-1 {
         transform: translate(0, -50%) scale(1);
     }
 

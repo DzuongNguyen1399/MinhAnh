@@ -387,6 +387,7 @@ const elements = {
     readingLetterLeft: document.getElementById("reading-letter-left"),
     readingLetterRight: document.getElementById("reading-letter-right"),
     readingBaseLetter: document.getElementById("reading-base-letter"),
+    readingBaseLetter2: document.getElementById("reading-base-letter-2"),
     readingFirstLetter: document.getElementById("reading-first-letter"),
     readingFrontLetters: Array.from(document.querySelectorAll(".reading-front-letter")).sort((a, b) => {
         return Number(a.dataset.letterPage || 0) - Number(b.dataset.letterPage || 0);
@@ -707,6 +708,10 @@ if (elements.readingFrontLetters.length) {
     elements.readingFrontLetters.forEach((letter) => {
         letter.addEventListener("click", handleReadingFrontLetterClick);
     });
+}
+
+if (elements.readingBaseLetter) {
+    elements.readingBaseLetter.addEventListener("click", handleReadingFrontLetterClick);
 }
 
 if (elements.readingLetterLeft) {
@@ -1542,7 +1547,7 @@ function showReadingCatScene() {
     document.body.className = "reading-mode";
     if (elements.readingCatScene) {
         resetReadingFrontLetters();
-        elements.readingCatScene.classList.remove("is-letter-open", "reading-sequence-start");
+        elements.readingCatScene.classList.remove("is-letter-open", "is-left-letter-open", "is-right-letter-open", "reading-sequence-start");
         elements.readingCatScene.classList.add("is-entering");
         elements.readingCatScene.setAttribute("aria-hidden", "false");
         void elements.readingCatScene.offsetWidth;
@@ -1652,6 +1657,7 @@ function handleReadingGroundLetterClick(event, side) {
     if (event) {
         event.preventDefault();
     }
+    const isLeftLetter = side === "left";
     const selectedLetter = side === "left" ? elements.readingLetterLeft : elements.readingLetterRight;
     [elements.readingLetterLeft, elements.readingLetterRight].forEach((letter) => {
         if (letter) {
@@ -1660,7 +1666,8 @@ function handleReadingGroundLetterClick(event, side) {
     });
     if (elements.readingCatScene) {
         resetReadingFrontLetters();
-        elements.readingCatScene.classList.add("is-letter-open");
+        elements.readingCatScene.classList.remove("is-left-letter-open", "is-right-letter-open");
+        elements.readingCatScene.classList.add("is-letter-open", isLeftLetter ? "is-left-letter-open" : "is-right-letter-open");
     }
     fadeNuanNuanToQuietVolume();
 }
@@ -1669,11 +1676,19 @@ function handleReadingFrontLetterClick(event) {
     if (event) {
         event.preventDefault();
     }
-    if (!elements.readingCatScene || !elements.readingCatScene.classList.contains("is-letter-open")) {
+    if (
+        !elements.readingCatScene ||
+        !elements.readingCatScene.classList.contains("is-letter-open") ||
+        !elements.readingCatScene.classList.contains("is-left-letter-open")
+    ) {
         return;
     }
     const activeLetter = elements.readingFrontLetters[readingRemovedFrontLetterCount];
-    if (event && event.currentTarget !== activeLetter) {
+    if (!activeLetter) {
+        return;
+    }
+    const clickedLetter = event ? event.currentTarget : null;
+    if (clickedLetter !== activeLetter && clickedLetter !== elements.readingBaseLetter) {
         return;
     }
     playReadingPageFlipSound();
@@ -1738,13 +1753,14 @@ function handleReadingSceneDismissClick(event) {
     const target = event.target;
     if (
         target === elements.readingBaseLetter ||
+        target === elements.readingBaseLetter2 ||
         elements.readingFrontLetters.includes(target) ||
         target === elements.readingLetterLeft ||
         target === elements.readingLetterRight
     ) {
         return;
     }
-    elements.readingCatScene.classList.remove("is-letter-open");
+    elements.readingCatScene.classList.remove("is-letter-open", "is-left-letter-open", "is-right-letter-open");
     resetReadingFrontLetters();
     [elements.readingLetterLeft, elements.readingLetterRight].forEach((letter) => {
         if (letter) {
